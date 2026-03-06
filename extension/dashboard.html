@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CookieWise - Privacy Dashboard</title>
+    <title>CookieWise - Privacy Guardian</title>
     <style>
         * {
             margin: 0;
@@ -12,538 +12,636 @@
         }
 
         body {
-            font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
-            background: linear-gradient(135deg, #0a0c14 0%, #141925 100%);
+            font-family: 'Poppins', 'Inter', system-ui, sans-serif;
+            background: radial-gradient(ellipse at top, #1a1f35, #0a0c1a);
             color: #ffffff;
             min-height: 100vh;
-            display: flex;
-            flex-direction: column;
             position: relative;
             overflow-x: hidden;
         }
 
-        /* Animated background grid */
-        body::before {
-            content: '';
+        /* Cyber Grid Effect */
+        .cyber-grid {
             position: fixed;
             top: 0;
             left: 0;
-            right: 0;
-            bottom: 0;
+            width: 100%;
+            height: 100%;
             background-image: 
-                linear-gradient(rgba(66, 153, 225, 0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(66, 153, 225, 0.03) 1px, transparent 1px);
-            background-size: 50px 50px;
+                linear-gradient(rgba(0, 255, 255, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 255, 255, 0.05) 1px, transparent 1px);
+            background-size: 40px 40px;
             pointer-events: none;
             z-index: 0;
+            animation: gridPulse 4s infinite;
         }
 
-        /* Floating orbs effect */
-        .orb {
+        @keyframes gridPulse {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.6; }
+        }
+
+        /* Floating Particles */
+        .particle {
             position: fixed;
+            width: 4px;
+            height: 4px;
+            background: cyan;
             border-radius: 50%;
-            background: radial-gradient(circle at 30% 30%, rgba(66, 153, 225, 0.15), transparent 70%);
-            filter: blur(40px);
-            z-index: 0;
-            animation: float 20s infinite ease-in-out;
+            pointer-events: none;
+            opacity: 0.5;
+            filter: blur(1px);
+            animation: floatParticle linear infinite;
         }
 
-        .orb-1 {
+        @keyframes floatParticle {
+            from { transform: translateY(100vh) rotate(0deg); }
+            to { transform: translateY(-100vh) rotate(360deg); }
+        }
+
+        /* 3D Cube Animation */
+        .cube-bg {
+            position: fixed;
             width: 300px;
             height: 300px;
-            top: -100px;
             right: -100px;
-            background: radial-gradient(circle at 30% 30%, rgba(66, 153, 225, 0.2), transparent 70%);
+            bottom: -100px;
+            transform-style: preserve-3d;
+            animation: cubeRotate 20s infinite linear;
+            opacity: 0.1;
+            z-index: 0;
         }
 
-        .orb-2 {
-            width: 400px;
-            height: 400px;
-            bottom: -150px;
-            left: -150px;
-            background: radial-gradient(circle at 70% 70%, rgba(147, 51, 234, 0.15), transparent 70%);
-            animation-delay: -5s;
+        .cube-bg div {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border: 2px solid cyan;
+            box-shadow: 0 0 20px cyan;
         }
 
-        @keyframes float {
-            0%, 100% { transform: translate(0, 0) rotate(0deg); }
-            33% { transform: translate(30px, -20px) rotate(120deg); }
-            66% { transform: translate(-20px, 30px) rotate(240deg); }
+        .cube-bg .front { transform: translateZ(150px); }
+        .cube-bg .back { transform: rotateY(180deg) translateZ(150px); }
+        .cube-bg .right { transform: rotateY(90deg) translateZ(150px); }
+        .cube-bg .left { transform: rotateY(-90deg) translateZ(150px); }
+        .cube-bg .top { transform: rotateX(90deg) translateZ(150px); }
+        .cube-bg .bottom { transform: rotateX(-90deg) translateZ(150px); }
+
+        @keyframes cubeRotate {
+            from { transform: rotateX(0deg) rotateY(0deg); }
+            to { transform: rotateX(360deg) rotateY(360deg); }
         }
 
-        /* Header/Navigation */
+        /* Navigation */
         .glass-nav {
-            background: rgba(20, 25, 40, 0.7);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border-bottom: 1px solid rgba(66, 153, 225, 0.2);
+            background: rgba(10, 20, 40, 0.8);
+            backdrop-filter: blur(15px);
+            border-bottom: 2px solid rgba(0, 255, 255, 0.3);
             padding: 1rem 2rem;
             position: sticky;
             top: 0;
-            z-index: 10;
+            z-index: 100;
             display: flex;
             align-items: center;
             justify-content: space-between;
+            box-shadow: 0 10px 30px rgba(0, 255, 255, 0.1);
         }
 
         .logo {
             display: flex;
             align-items: center;
-            gap: 10px;
-            font-weight: 600;
-            font-size: 1.25rem;
-            background: linear-gradient(135deg, #fff 0%, #94a3b8 100%);
+            gap: 12px;
+            font-size: 1.5rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .logo-icon {
+            font-size: 2rem;
+            filter: drop-shadow(0 0 10px cyan);
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+
+        .logo-text {
+            background: linear-gradient(135deg, #fff, cyan);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }
 
-        .logo-icon {
-            font-size: 1.5rem;
-            filter: drop-shadow(0 0 10px rgba(66, 153, 225, 0.5));
-        }
-
-        .nav-tabs {
+        .nav-tabs-modern {
             display: flex;
-            gap: 8px;
-            background: rgba(10, 15, 30, 0.5);
-            padding: 4px;
-            border-radius: 50px;
-            border: 1px solid rgba(66, 153, 225, 0.2);
+            gap: 12px;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 6px;
+            border-radius: 40px;
+            border: 1px solid rgba(0, 255, 255, 0.3);
         }
 
-        .nav-btn {
-            background: transparent;
+        .nav-btn-modern {
+            padding: 12px 28px;
             border: none;
+            background: transparent;
             color: #94a3b8;
-            padding: 10px 24px;
-            border-radius: 50px;
-            font-size: 0.95rem;
-            font-weight: 500;
+            border-radius: 30px;
+            font-size: 1rem;
+            font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.3s;
             display: flex;
             align-items: center;
             gap: 8px;
+            position: relative;
+            overflow: hidden;
         }
 
-        .nav-btn:hover {
+        .nav-btn-modern::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(0, 255, 255, 0.2);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .nav-btn-modern:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .nav-btn-modern.active {
+            background: linear-gradient(135deg, cyan, #00f);
             color: white;
-            background: rgba(66, 153, 225, 0.1);
+            box-shadow: 0 5px 20px cyan;
         }
 
-        .nav-btn.active {
-            background: linear-gradient(135deg, #4299e1, #667eea);
-            color: white;
-            box-shadow: 0 4px 15px rgba(66, 153, 225, 0.4);
-        }
-
-        .nav-btn i {
-            font-size: 1.1rem;
-        }
-
-        .status-badge {
-            background: rgba(72, 187, 120, 0.15);
-            border: 1px solid rgba(72, 187, 120, 0.3);
-            color: #48bb78;
-            padding: 6px 12px;
-            border-radius: 50px;
-            font-size: 0.85rem;
-            font-weight: 500;
+        .status-hologram {
+            background: rgba(0, 255, 255, 0.1);
+            border: 1px solid cyan;
+            color: cyan;
+            padding: 8px 16px;
+            border-radius: 30px;
+            font-size: 0.9rem;
             display: flex;
             align-items: center;
-            gap: 6px;
-        }
-
-        .pulse {
-            width: 8px;
-            height: 8px;
-            background: #48bb78;
-            border-radius: 50%;
-            box-shadow: 0 0 0 0 rgba(72, 187, 120, 0.5);
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0% { box-shadow: 0 0 0 0 rgba(72, 187, 120, 0.5); }
-            70% { box-shadow: 0 0 0 10px rgba(72, 187, 120, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(72, 187, 120, 0); }
-        }
-
-        /* Main content */
-        .main-content {
-            flex: 1;
-            padding: 2rem;
+            gap: 8px;
             position: relative;
-            z-index: 1;
-            max-width: 1400px;
-            margin: 0 auto;
-            width: 100%;
+            overflow: hidden;
         }
 
+        .status-hologram::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(0, 255, 255, 0.2), transparent);
+            animation: shine 3s infinite;
+        }
+
+        @keyframes shine {
+            from { transform: translateX(-100%) rotate(45deg); }
+            to { transform: translateX(100%) rotate(45deg); }
+        }
+
+        .pulse-ring {
+            width: 10px;
+            height: 10px;
+            background: cyan;
+            border-radius: 50%;
+            box-shadow: 0 0 20px cyan;
+            animation: pulseRing 2s infinite;
+        }
+
+        @keyframes pulseRing {
+            0% { box-shadow: 0 0 0 0 cyan; }
+            70% { box-shadow: 0 0 20px 10px rgba(0, 255, 255, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(0, 255, 255, 0); }
+        }
+
+        /* Main Content */
+        .main-content {
+            position: relative;
+            z-index: 10;
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        /* Interactive Cards */
         .section {
             display: none;
-            animation: fadeIn 0.5s ease-out;
+            animation: slideIn 0.6s cubic-bezier(0.23, 1, 0.32, 1);
         }
 
         .section.active-section {
             display: block;
         }
 
-        @keyframes fadeIn {
-            from { 
-                opacity: 0; 
-                transform: translateY(20px); 
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(50px);
             }
-            to { 
-                opacity: 1; 
-                transform: translateY(0); 
+            to {
+                opacity: 1;
+                transform: translateX(0);
             }
         }
 
-        /* Risk Overview Cards */
-        .risk-header {
+        /* 3D Risk Meter */
+        .risk-meter-3d {
+            perspective: 1000px;
             margin-bottom: 2rem;
         }
 
-        .risk-header h1 {
-            font-size: 2rem;
-            background: linear-gradient(135deg, #fff, #94a3b8);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 0.5rem;
-        }
-
-        .risk-header p {
-            color: #94a3b8;
-        }
-
-        .risk-meter-container {
-            background: rgba(10, 15, 30, 0.6);
-            border-radius: 24px;
-            padding: 2rem;
-            margin-bottom: 2rem;
-            border: 1px solid rgba(255, 255, 255, 0.05);
+        .risk-card-3d {
+            background: rgba(20, 30, 50, 0.7);
             backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            border-radius: 30px;
+            padding: 2rem;
+            transform-style: preserve-3d;
+            transition: transform 0.3s;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
         }
 
-        .risk-meter-title {
+        .risk-card-3d:hover {
+            transform: rotateX(5deg) rotateY(5deg);
+        }
+
+        .risk-header-modern {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 1rem;
+            margin-bottom: 2rem;
         }
 
-        .risk-meter-title h3 {
-            color: #94a3b8;
-            font-weight: 500;
+        .risk-title {
+            font-size: 1.2rem;
+            color: cyan;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            text-shadow: 0 0 10px cyan;
         }
 
-        .risk-percentage {
-            font-size: 2.5rem;
-            font-weight: 700;
-            background: linear-gradient(135deg, #f56565, #ed8936);
+        .risk-score {
+            font-size: 4rem;
+            font-weight: 800;
+            line-height: 1;
+            background: linear-gradient(135deg, #ff6b6b, #f0f);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
+            filter: drop-shadow(0 0 20px rgba(255, 0, 255, 0.5));
         }
 
-        .risk-meter {
-            height: 20px;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 50px;
-            overflow: hidden;
-            margin-bottom: 1rem;
+        /* Interactive Gauge */
+        .gauge-container {
             position: relative;
+            height: 30px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            margin: 2rem 0;
+            border: 1px solid cyan;
+            overflow: hidden;
+            cursor: pointer;
         }
 
-        .risk-fill {
+        .gauge-fill {
             height: 100%;
             width: 75%;
-            background: linear-gradient(90deg, #f56565, #ed8936, #fbbf24);
-            border-radius: 50px;
+            background: linear-gradient(90deg, #00ff87, #60efff, #0061ff);
+            border-radius: 15px;
             position: relative;
-            animation: fillAnimation 1.5s ease-out;
+            transition: width 1s cubic-bezier(0.68, -0.55, 0.265, 1.55);
         }
 
-        @keyframes fillAnimation {
-            from { width: 0%; }
-            to { width: 75%; }
+        .gauge-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 10px;
+            height: 100%;
+            background: white;
+            filter: blur(10px);
+            animation: scan 2s infinite;
         }
 
-        .risk-stats {
+        @keyframes scan {
+            from { right: 100%; opacity: 0; }
+            to { right: 0; opacity: 1; }
+        }
+
+        .gauge-markers {
             display: flex;
-            gap: 2rem;
-            color: #94a3b8;
+            justify-content: space-between;
+            margin-top: 0.5rem;
+            color: rgba(255, 255, 255, 0.5);
         }
 
-        .risk-stat-item {
-            display: flex;
-            align-items: center;
-            gap: 8px;
+        .marker {
+            width: 2px;
+            height: 10px;
+            background: cyan;
+            transform: rotate(15deg);
         }
 
-        .badge {
-            padding: 4px 8px;
-            border-radius: 12px;
-            font-size: 0.75rem;
-            font-weight: 600;
-        }
-
-        .badge.high {
-            background: rgba(245, 101, 101, 0.2);
-            color: #f56565;
-            border: 1px solid rgba(245, 101, 101, 0.3);
-        }
-
-        /* Category Grid */
-        .category-grid {
+        /* Interactive Category Cards */
+        .category-grid-interactive {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .flip-card {
+            background: transparent;
+            height: 300px;
+            perspective: 1000px;
+            cursor: pointer;
+        }
+
+        .flip-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.8s;
+            transform-style: preserve-3d;
+        }
+
+        .flip-card:hover .flip-card-inner {
+            transform: rotateY(180deg);
+        }
+
+        .flip-card-front, .flip-card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 20px;
+            padding: 1.5rem;
+            background: rgba(20, 30, 50, 0.9);
+            backdrop-filter: blur(10px);
+            border: 1px solid cyan;
+            box-shadow: 0 10px 30px rgba(0, 255, 255, 0.2);
+        }
+
+        .flip-card-front {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .flip-card-front .icon-3d {
+            font-size: 4rem;
+            animation: float 3s infinite;
+        }
+
+        .flip-card-back {
+            transform: rotateY(180deg);
+            text-align: left;
+            overflow-y: auto;
+        }
+
+        .risk-badge-interactive {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            animation: glow 2s infinite;
+        }
+
+        .risk-badge-interactive.high {
+            background: rgba(255, 0, 0, 0.2);
+            color: #ff6b6b;
+            border: 1px solid #ff6b6b;
+            box-shadow: 0 0 15px #ff6b6b;
+        }
+
+        .risk-badge-interactive.medium {
+            background: rgba(255, 255, 0, 0.2);
+            color: #ffd93d;
+            border: 1px solid #ffd93d;
+            box-shadow: 0 0 15px #ffd93d;
+        }
+
+        @keyframes glow {
+            0%, 100% { filter: brightness(1); }
+            50% { filter: brightness(1.3); }
+        }
+
+        /* Interactive Heatmap */
+        .heatmap-3d {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 1.5rem;
             margin-top: 2rem;
         }
 
-        .category-card {
-            background: rgba(20, 25, 45, 0.7);
+        .heatmap-tower {
+            background: rgba(20, 30, 50, 0.7);
             backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.03);
+            border: 1px solid cyan;
             border-radius: 20px;
             padding: 1.5rem;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .category-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: linear-gradient(90deg, #4299e1, #667eea);
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .category-card:hover {
-            transform: translateY(-5px);
-            background: rgba(25, 30, 50, 0.8);
-            border-color: rgba(66, 153, 225, 0.2);
-        }
-
-        .category-card:hover::before {
-            opacity: 1;
-        }
-
-        .card-header {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 1rem;
-        }
-
-        .card-icon {
-            width: 40px;
-            height: 40px;
-            background: rgba(66, 153, 225, 0.1);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.2rem;
-        }
-
-        .card-header h3 {
-            font-size: 1.1rem;
-            font-weight: 600;
-        }
-
-        .risk-level {
-            margin-left: auto;
-            font-size: 0.9rem;
-            font-weight: 600;
-        }
-
-        .risk-level.high {
-            color: #f56565;
-        }
-
-        .risk-level.medium {
-            color: #fbbf24;
-        }
-
-        .risk-level.low {
-            color: #48bb78;
-        }
-
-        .card-details {
-            color: #94a3b8;
-            font-size: 0.9rem;
-        }
-
-        .tracker-list {
-            margin-top: 1rem;
-            list-style: none;
-        }
-
-        .tracker-list li {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 8px 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
-        }
-
-        .tracker-list li:last-child {
-            border-bottom: none;
-        }
-
-        .dot {
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-        }
-
-        .dot.red { background: #f56565; box-shadow: 0 0 10px #f56565; }
-        .dot.yellow { background: #fbbf24; box-shadow: 0 0 10px #fbbf24; }
-        .dot.blue { background: #4299e1; box-shadow: 0 0 10px #4299e1; }
-
-        /* Heatmap Grid */
-        .heatmap-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
-            margin-top: 2rem;
-        }
-
-        .heatmap-card {
-            background: rgba(20, 25, 45, 0.7);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.03);
-            border-radius: 16px;
-            padding: 1rem;
             text-align: center;
+            transition: all 0.3s;
+            cursor: pointer;
         }
 
-        .heatmap-domain {
-            font-size: 0.9rem;
-            color: #94a3b8;
-            margin-bottom: 0.5rem;
+        .heatmap-tower:hover {
+            transform: translateY(-10px) scale(1.05);
+            box-shadow: 0 20px 40px cyan;
         }
 
-        .heatmap-bar-container {
-            height: 100px;
+        .tower-container {
+            height: 150px;
             display: flex;
             align-items: flex-end;
             justify-content: center;
-            gap: 4px;
+            gap: 8px;
+            margin: 1rem 0;
         }
 
-        .heatmap-bar {
+        .tower-block {
             width: 30px;
-            background: linear-gradient(180deg, #4299e1, #667eea);
+            background: linear-gradient(180deg, cyan, #00f);
             border-radius: 8px 8px 0 0;
-            transition: height 0.3s ease;
+            transition: height 0.3s;
             position: relative;
+            animation: towerGlow 2s infinite;
         }
 
-        .heatmap-bar:hover {
-            opacity: 0.9;
-            transform: scaleX(1.1);
+        @keyframes towerGlow {
+            0%, 100% { filter: brightness(1); }
+            50% { filter: brightness(1.5); }
         }
 
-        .heatmap-count {
+        .tower-label {
+            font-size: 0.9rem;
+            color: cyan;
             margin-top: 0.5rem;
-            font-size: 0.8rem;
-            color: #94a3b8;
         }
 
-        /* Dangerous Clauses */
-        .clauses-container {
+        /* Dangerous Clauses with Parallax */
+        .clauses-parallax {
             display: flex;
             flex-direction: column;
             gap: 1rem;
             margin-top: 2rem;
         }
 
-        .clause-item {
-            background: rgba(20, 25, 45, 0.7);
+        .clause-parallax-item {
+            background: rgba(20, 30, 50, 0.7);
             backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.03);
-            border-radius: 16px;
+            border: 1px solid rgba(255, 0, 0, 0.3);
+            border-radius: 20px;
             padding: 1.5rem;
             display: flex;
             align-items: center;
-            gap: 1rem;
-            transition: all 0.3s ease;
+            gap: 1.5rem;
+            transition: all 0.3s;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
         }
 
-        .clause-item:hover {
-            background: rgba(30, 35, 55, 0.8);
-            border-color: rgba(245, 101, 101, 0.2);
+        .clause-parallax-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 0, 0, 0.2), transparent);
+            transition: left 0.5s;
         }
 
-        .clause-icon {
-            width: 48px;
-            height: 48px;
-            background: rgba(245, 101, 101, 0.1);
-            border-radius: 12px;
+        .clause-parallax-item:hover::before {
+            left: 100%;
+        }
+
+        .clause-parallax-item:hover {
+            transform: translateX(10px) scale(1.02);
+            border-color: red;
+            box-shadow: -10px 10px 30px rgba(255, 0, 0, 0.3);
+        }
+
+        .clause-icon-3d {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, rgba(255, 0, 0, 0.2), rgba(255, 0, 255, 0.2));
+            border-radius: 15px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.5rem;
+            font-size: 2rem;
+            transform: rotate(10deg);
+            transition: transform 0.3s;
         }
 
-        .clause-content {
-            flex: 1;
+        .clause-parallax-item:hover .clause-icon-3d {
+            transform: rotate(0deg) scale(1.1);
         }
 
-        .clause-content h4 {
-            font-size: 1.1rem;
-            margin-bottom: 0.5rem;
+        .severity-meter {
+            width: 100px;
+            height: 100px;
+            position: relative;
         }
 
-        .clause-content p {
-            color: #94a3b8;
-            font-size: 0.9rem;
+        .severity-svg {
+            width: 100%;
+            height: 100%;
+            transform: rotate(-90deg);
         }
 
-        .severity {
-            padding: 6px 12px;
+        .severity-circle-bg {
+            fill: none;
+            stroke: rgba(255, 255, 255, 0.1);
+            stroke-width: 8;
+        }
+
+        .severity-circle-fill {
+            fill: none;
+            stroke-width: 8;
+            stroke-linecap: round;
+            stroke-dasharray: 283;
+            stroke-dashoffset: calc(283 - (283 * var(--percent)) / 100);
+            transition: stroke-dashoffset 0.5s;
+        }
+
+        .severity-circle-fill.critical { stroke: #ff0000; }
+        .severity-circle-fill.high { stroke: #ff6b00; }
+        .severity-circle-fill.medium { stroke: #ffd93d; }
+
+        /* Action Button */
+        .action-button {
+            background: linear-gradient(135deg, cyan, #00f);
+            border: none;
+            color: white;
+            padding: 16px 40px;
             border-radius: 50px;
-            font-size: 0.8rem;
+            font-size: 1.2rem;
             font-weight: 600;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s;
+            margin: 2rem auto;
+            display: block;
+            box-shadow: 0 10px 30px cyan;
         }
 
-        .severity.critical {
-            background: rgba(245, 101, 101, 0.15);
-            color: #f56565;
-            border: 1px solid rgba(245, 101, 101, 0.3);
+        .action-button::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
         }
 
-        .severity.high {
-            background: rgba(245, 158, 101, 0.15);
-            color: #f59e65;
-            border: 1px solid rgba(245, 158, 101, 0.3);
+        .action-button:hover::before {
+            width: 300px;
+            height: 300px;
         }
 
-        .severity.medium {
-            background: rgba(251, 191, 36, 0.15);
-            color: #fbbf24;
-            border: 1px solid rgba(251, 191, 36, 0.3);
+        .action-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 20px 40px cyan;
         }
 
         /* Footer */
-        .footer {
-            margin-top: 3rem;
+        .footer-modern {
             text-align: center;
-            color: #4a5568;
-            font-size: 0.8rem;
+            padding: 2rem;
+            color: rgba(0, 255, 255, 0.5);
+            font-size: 0.9rem;
             position: relative;
-            z-index: 1;
+            z-index: 10;
+            border-top: 1px solid rgba(0, 255, 255, 0.2);
+            margin-top: 2rem;
         }
 
         /* Responsive */
@@ -551,62 +649,58 @@
             .glass-nav {
                 flex-direction: column;
                 gap: 1rem;
-                padding: 1rem;
             }
-
-            .nav-tabs {
-                width: 100%;
-                overflow-x: auto;
-                padding: 4px;
+            
+            .flip-card {
+                height: 250px;
             }
-
-            .nav-btn {
-                padding: 8px 16px;
-                white-space: nowrap;
-            }
-
-            .category-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .clause-item {
+            
+            .clause-parallax-item {
                 flex-direction: column;
                 text-align: center;
-            }
-
-            .severity {
-                align-self: center;
             }
         }
     </style>
 </head>
 <body>
-    <!-- Animated background orbs -->
-    <div class="orb orb-1"></div>
-    <div class="orb orb-2"></div>
+    <!-- Cyber Grid Background -->
+    <div class="cyber-grid"></div>
+    
+    <!-- Floating Particles -->
+    <div id="particles"></div>
+    
+    <!-- 3D Cube -->
+    <div class="cube-bg">
+        <div class="front"></div>
+        <div class="back"></div>
+        <div class="right"></div>
+        <div class="left"></div>
+        <div class="top"></div>
+        <div class="bottom"></div>
+    </div>
 
     <!-- Navigation -->
     <nav class="glass-nav">
         <div class="logo">
             <span class="logo-icon">🍪</span>
-            CookieWise
+            <span class="logo-text">CookieWise</span>
         </div>
         
-        <div class="nav-tabs">
-            <button class="nav-btn active" onclick="showTab('risk')">
-                <span>📊</span> Risk Overview
+        <div class="nav-tabs-modern">
+            <button class="nav-btn-modern active" onclick="showTab('risk')">
+                <span>📊</span> Risk Core
             </button>
-            <button class="nav-btn" onclick="showTab('heatmap')">
-                <span>🔥</span> Heatmap
+            <button class="nav-btn-modern" onclick="showTab('heatmap')">
+                <span>🔥</span> Heat Vision
             </button>
-            <button class="nav-btn" onclick="showTab('clauses')">
-                <span>⚠️</span> Dangerous Clauses
+            <button class="nav-btn-modern" onclick="showTab('clauses')">
+                <span>⚠️</span> Threat Scan
             </button>
         </div>
 
-        <div class="status-badge">
-            <span class="pulse"></span>
-            Analyzing: example.com
+        <div class="status-hologram">
+            <span class="pulse-ring"></span>
+            ACTIVE SCAN: example.com
         </div>
     </nav>
 
@@ -614,111 +708,101 @@
     <main class="main-content">
         <!-- Risk Overview Section -->
         <div id="risk" class="section active-section">
-            <div class="risk-header">
-                <h1>Privacy Risk Overview</h1>
-                <p>Real-time analysis of tracking and data collection practices</p>
+            <div class="risk-meter-3d">
+                <div class="risk-card-3d">
+                    <div class="risk-header-modern">
+                        <span class="risk-title">⚠️ THREAT LEVEL</span>
+                        <span class="risk-score" id="riskScore">75%</span>
+                    </div>
+                    
+                    <!-- Interactive Gauge -->
+                    <div class="gauge-container" onclick="cycleRiskLevel()">
+                        <div class="gauge-fill" id="gaugeFill" style="width: 75%"></div>
+                    </div>
+                    <div class="gauge-markers">
+                        <span>🟢 SAFE</span>
+                        <span>🟡 WARNING</span>
+                        <span>🔴 CRITICAL</span>
+                    </div>
+
+                    <div style="display: flex; justify-content: space-between; margin-top: 1rem; color: cyan;">
+                        <span>📡 47 Active Trackers</span>
+                        <span>🎯 15 Data Partners</span>
+                        <span>⚡ 85% Risk Score</span>
+                    </div>
+                </div>
             </div>
 
-            <div class="risk-meter-container">
-                <div class="risk-meter-title">
-                    <h3>Overall Risk Score</h3>
-                    <span class="risk-percentage">75%</span>
-                </div>
-                <div class="risk-meter">
-                    <div class="risk-fill"></div>
-                </div>
-                <div class="risk-stats">
-                    <div class="risk-stat-item">
-                        <span class="badge high">High Risk</span> Above average
-                    </div>
-                    <div class="risk-stat-item">
-                        <span>🔍 47 trackers detected</span>
-                    </div>
-                </div>
-            </div>
+            <h2 style="color: cyan; margin: 2rem 0; text-align: center; text-transform: uppercase; letter-spacing: 4px;">
+                ⚡ RISK SECTORS ⚡
+            </h2>
 
-            <h2 style="margin: 2rem 0 1rem; color: #94a3b8;">Risk Category Breakdown</h2>
-            
-            <div class="category-grid">
-                <!-- Tracking Technologies Card -->
-                <div class="category-card">
-                    <div class="card-header">
-                        <div class="card-icon">📍</div>
-                        <h3>Tracking Technologies</h3>
-                        <span class="risk-level high">High Risk</span>
-                    </div>
-                    <div class="card-details">
-                        <p>23 tracking cookies detected</p>
-                        <ul class="tracker-list">
-                            <li>
-                                <span class="dot red"></span>
-                                Google Analytics (session tracking)
-                            </li>
-                            <li>
-                                <span class="dot red"></span>
-                                Facebook Pixel (conversion tracking)
-                            </li>
-                            <li>
-                                <span class="dot yellow"></span>
-                                Hotjar (behavior tracking)
-                            </li>
-                            <li>
-                                <span class="dot blue"></span>
-                                LinkedIn Insight Tag
-                            </li>
-                        </ul>
+            <!-- Interactive Flip Cards -->
+            <div class="category-grid-interactive">
+                <!-- Tracking Card -->
+                <div class="flip-card">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front">
+                            <div class="icon-3d">📍</div>
+                            <h3>TRACKING TECHNOLOGIES</h3>
+                            <div class="risk-badge-interactive high">HIGH THREAT</div>
+                            <div style="font-size: 2rem;">23</div>
+                            <div style="color: cyan;">trackers</div>
+                        </div>
+                        <div class="flip-card-back">
+                            <h3 style="color: cyan; margin-bottom: 1rem;">🔍 DETECTED</h3>
+                            <ul style="list-style: none; color: #94a3b8;">
+                                <li style="margin: 0.5rem 0;">• Google Analytics</li>
+                                <li style="margin: 0.5rem 0;">• Facebook Pixel</li>
+                                <li style="margin: 0.5rem 0;">• Hotjar</li>
+                                <li style="margin: 0.5rem 0;">• LinkedIn Tag</li>
+                                <li style="margin: 0.5rem 0;">• Twitter Pixel</li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Third Party Sharing Card -->
-                <div class="category-card">
-                    <div class="card-header">
-                        <div class="card-icon">🔄</div>
-                        <h3>Third Party Sharing</h3>
-                        <span class="risk-level high">High Risk</span>
-                    </div>
-                    <div class="card-details">
-                        <p>Data shared with 15+ partners</p>
-                        <ul class="tracker-list">
-                            <li>
-                                <span class="dot red"></span>
-                                Advertising networks (targeted ads)
-                            </li>
-                            <li>
-                                <span class="dot yellow"></span>
-                                Analytics providers (usage data)
-                            </li>
-                            <li>
-                                <span class="dot red"></span>
-                                Social media platforms
-                            </li>
-                        </ul>
+                <!-- Sharing Card -->
+                <div class="flip-card">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front">
+                            <div class="icon-3d">🔄</div>
+                            <h3>DATA SHARING</h3>
+                            <div class="risk-badge-interactive high">HIGH THREAT</div>
+                            <div style="font-size: 2rem;">15+</div>
+                            <div style="color: cyan;">partners</div>
+                        </div>
+                        <div class="flip-card-back">
+                            <h3 style="color: cyan; margin-bottom: 1rem;">📤 SHARED WITH</h3>
+                            <ul style="list-style: none; color: #94a3b8;">
+                                <li style="margin: 0.5rem 0;">• Advertising Networks</li>
+                                <li style="margin: 0.5rem 0;">• Data Brokers</li>
+                                <li style="margin: 0.5rem 0;">• Social Platforms</li>
+                                <li style="margin: 0.5rem 0;">• Marketing Agencies</li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Data Collection Card -->
-                <div class="category-card">
-                    <div class="card-header">
-                        <div class="card-icon">📊</div>
-                        <h3>Data Collection</h3>
-                        <span class="risk-level medium">Medium Risk</span>
-                    </div>
-                    <div class="card-details">
-                        <p>Collects personal and behavioral data</p>
-                        <ul class="tracker-list">
-                            <li>
-                                <span class="dot red"></span>
-                                Browsing history & patterns
-                            </li>
-                            <li>
-                                <span class="dot yellow"></span>
-                                Location data (IP-based)
-                            </li>
-                            <li>
-                                <span class="dot blue"></span>
-                                Device information
-                            </li>
-                        </ul>
+                <!-- Collection Card -->
+                <div class="flip-card">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front">
+                            <div class="icon-3d">📊</div>
+                            <h3>DATA COLLECTION</h3>
+                            <div class="risk-badge-interactive medium">MEDIUM THREAT</div>
+                            <div style="font-size: 2rem;">12</div>
+                            <div style="color: cyan;">data points</div>
+                        </div>
+                        <div class="flip-card-back">
+                            <h3 style="color: cyan; margin-bottom: 1rem;">📋 COLLECTING</h3>
+                            <ul style="list-style: none; color: #94a3b8;">
+                                <li style="margin: 0.5rem 0;">• Browsing History</li>
+                                <li style="margin: 0.5rem 0;">• Location Data</li>
+                                <li style="margin: 0.5rem 0;">• Device Info</li>
+                                <li style="margin: 0.5rem 0;">• Purchase History</li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -726,171 +810,230 @@
 
         <!-- Heatmap Section -->
         <div id="heatmap" class="section">
-            <div class="risk-header">
-                <h1>Tracking Heatmap</h1>
-                <p>Visual representation of tracking intensity across the page</p>
+            <h1 style="text-align: center; margin-bottom: 2rem; background: linear-gradient(135deg, cyan, #f0f); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+                🔥 TRACKER HEAT VISION 🔥
+            </h1>
+
+            <div class="heatmap-3d">
+                <div class="heatmap-tower">
+                    <div class="tower-container">
+                        <div class="tower-block" style="height: 80px;"></div>
+                        <div class="tower-block" style="height: 60px;"></div>
+                        <div class="tower-block" style="height: 40px;"></div>
+                    </div>
+                    <div class="tower-label">HEADER</div>
+                    <div style="color: #f0f;">12 trackers</div>
+                </div>
+
+                <div class="heatmap-tower">
+                    <div class="tower-container">
+                        <div class="tower-block" style="height: 60px;"></div>
+                        <div class="tower-block" style="height: 90px;"></div>
+                        <div class="tower-block" style="height: 70px;"></div>
+                    </div>
+                    <div class="tower-label">MAIN</div>
+                    <div style="color: #f0f;">18 trackers</div>
+                </div>
+
+                <div class="heatmap-tower">
+                    <div class="tower-container">
+                        <div class="tower-block" style="height: 70px;"></div>
+                        <div class="tower-block" style="height: 50px;"></div>
+                        <div class="tower-block" style="height: 30px;"></div>
+                    </div>
+                    <div class="tower-label">SIDEBAR</div>
+                    <div style="color: #f0f;">9 trackers</div>
+                </div>
+
+                <div class="heatmap-tower">
+                    <div class="tower-container">
+                        <div class="tower-block" style="height: 40px;"></div>
+                        <div class="tower-block" style="height: 30px;"></div>
+                        <div class="tower-block" style="height: 20px;"></div>
+                    </div>
+                    <div class="tower-label">FOOTER</div>
+                    <div style="color: #f0f;">5 trackers</div>
+                </div>
             </div>
 
-            <div class="heatmap-grid">
-                <div class="heatmap-card">
-                    <div class="heatmap-domain">Header Section</div>
-                    <div class="heatmap-bar-container">
-                        <div class="heatmap-bar" style="height: 80px;"></div>
-                        <div class="heatmap-bar" style="height: 60px;"></div>
-                        <div class="heatmap-bar" style="height: 40px;"></div>
-                    </div>
-                    <div class="heatmap-count">12 trackers</div>
+            <!-- Interactive Distribution -->
+            <div style="margin-top: 3rem; background: rgba(20, 30, 50, 0.7); backdrop-filter: blur(10px); border-radius: 30px; padding: 2rem; border: 1px solid cyan;">
+                <h3 style="color: cyan; text-align: center; margin-bottom: 2rem;">📊 TRACKER DISTRIBUTION</h3>
+                <div class="gauge-container" style="height: 20px;">
+                    <div class="gauge-fill" style="width: 45%; background: linear-gradient(90deg, #ff6b6b, #f0f);"></div>
                 </div>
-
-                <div class="heatmap-card">
-                    <div class="heatmap-domain">Main Content</div>
-                    <div class="heatmap-bar-container">
-                        <div class="heatmap-bar" style="height: 60px;"></div>
-                        <div class="heatmap-bar" style="height: 90px;"></div>
-                        <div class="heatmap-bar" style="height: 70px;"></div>
-                    </div>
-                    <div class="heatmap-count">18 trackers</div>
-                </div>
-
-                <div class="heatmap-card">
-                    <div class="heatmap-domain">Sidebar</div>
-                    <div class="heatmap-bar-container">
-                        <div class="heatmap-bar" style="height: 70px;"></div>
-                        <div class="heatmap-bar" style="height: 50px;"></div>
-                        <div class="heatmap-bar" style="height: 30px;"></div>
-                    </div>
-                    <div class="heatmap-count">9 trackers</div>
-                </div>
-
-                <div class="heatmap-card">
-                    <div class="heatmap-domain">Footer</div>
-                    <div class="heatmap-bar-container">
-                        <div class="heatmap-bar" style="height: 40px;"></div>
-                        <div class="heatmap-bar" style="height: 30px;"></div>
-                        <div class="heatmap-bar" style="height: 20px;"></div>
-                    </div>
-                    <div class="heatmap-count">5 trackers</div>
-                </div>
-            </div>
-
-            <div style="margin-top: 2rem; background: rgba(20, 25, 45, 0.7); border-radius: 16px; padding: 2rem;">
-                <h3 style="margin-bottom: 1rem; color: #94a3b8;">Tracker Distribution</h3>
-                <div style="display: flex; gap: 2rem; flex-wrap: wrap;">
-                    <div style="flex: 1; min-width: 200px;">
-                        <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
-                            <span>Marketing</span>
-                            <span style="color: #f56565;">45%</span>
-                        </div>
-                        <div style="height: 8px; background: rgba(255,255,255,0.1); border-radius: 4px;">
-                            <div style="width: 45%; height: 100%; background: #f56565; border-radius: 4px;"></div>
-                        </div>
-                    </div>
-                    <div style="flex: 1; min-width: 200px;">
-                        <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
-                            <span>Analytics</span>
-                            <span style="color: #fbbf24;">30%</span>
-                        </div>
-                        <div style="height: 8px; background: rgba(255,255,255,0.1); border-radius: 4px;">
-                            <div style="width: 30%; height: 100%; background: #fbbf24; border-radius: 4px;"></div>
-                        </div>
-                    </div>
-                    <div style="flex: 1; min-width: 200px;">
-                        <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
-                            <span>Functional</span>
-                            <span style="color: #48bb78;">25%</span>
-                        </div>
-                        <div style="height: 8px; background: rgba(255,255,255,0.1); border-radius: 4px;">
-                            <div style="width: 25%; height: 100%; background: #48bb78; border-radius: 4px;"></div>
-                        </div>
-                    </div>
+                <div style="display: flex; justify-content: space-between; margin: 1rem 0; color: #94a3b8;">
+                    <span>Marketing 45%</span>
+                    <span>Analytics 30%</span>
+                    <span>Functional 25%</span>
                 </div>
             </div>
         </div>
 
         <!-- Dangerous Clauses Section -->
         <div id="clauses" class="section">
-            <div class="risk-header">
-                <h1>Dangerous Policy Clauses</h1>
-                <p>Critical findings that require your attention</p>
+            <h1 style="text-align: center; margin-bottom: 2rem; background: linear-gradient(135deg, #ff6b6b, #f0f); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+                ⚠️ CRITICAL THREAT DETECTION ⚠️
+            </h1>
+
+            <div class="clauses-parallax">
+                <div class="clause-parallax-item">
+                    <div class="clause-icon-3d">🔴</div>
+                    <div style="flex: 1;">
+                        <h3 style="color: #ff6b6b;">Third Party Data Sharing</h3>
+                        <p style="color: #94a3b8;">Your data may be sold to advertising networks without explicit consent</p>
+                    </div>
+                    <div class="severity-meter" style="--percent: 95">
+                        <svg class="severity-svg" viewBox="0 0 100 100">
+                            <circle class="severity-circle-bg" cx="50" cy="50" r="45"></circle>
+                            <circle class="severity-circle-fill critical" cx="50" cy="50" r="45" style="stroke-dashoffset: 14.15;"></circle>
+                        </svg>
+                    </div>
+                </div>
+
+                <div class="clause-parallax-item">
+                    <div class="clause-icon-3d">⚠️</div>
+                    <div style="flex: 1;">
+                        <h3 style="color: #ff6b00;">Indefinite Cookie Retention</h3>
+                        <p style="color: #94a3b8;">Cookies persist for 5+ years creating permanent tracking profiles</p>
+                    </div>
+                    <div class="severity-meter" style="--percent: 85">
+                        <svg class="severity-svg" viewBox="0 0 100 100">
+                            <circle class="severity-circle-bg" cx="50" cy="50" r="45"></circle>
+                            <circle class="severity-circle-fill high" cx="50" cy="50" r="45" style="stroke-dashoffset: 42.45;"></circle>
+                        </svg>
+                    </div>
+                </div>
+
+                <div class="clause-parallax-item">
+                    <div class="clause-icon-3d">🌍</div>
+                    <div style="flex: 1;">
+                        <h3 style="color: #ff6b00;">International Data Transfer</h3>
+                        <p style="color: #94a3b8;">Data transferred to countries with weaker privacy laws</p>
+                    </div>
+                    <div class="severity-meter" style="--percent: 80">
+                        <svg class="severity-svg" viewBox="0 0 100 100">
+                            <circle class="severity-circle-bg" cx="50" cy="50" r="45"></circle>
+                            <circle class="severity-circle-fill high" cx="50" cy="50" r="45" style="stroke-dashoffset: 56.6;"></circle>
+                        </svg>
+                    </div>
+                </div>
+
+                <div class="clause-parallax-item">
+                    <div class="clause-icon-3d">📱</div>
+                    <div style="flex: 1;">
+                        <h3 style="color: #ffd93d;">Cross-Device Tracking</h3>
+                        <p style="color: #94a3b8;">Activity tracked across all devices to build comprehensive profile</p>
+                    </div>
+                    <div class="severity-meter" style="--percent: 65">
+                        <svg class="severity-svg" viewBox="0 0 100 100">
+                            <circle class="severity-circle-bg" cx="50" cy="50" r="45"></circle>
+                            <circle class="severity-circle-fill medium" cx="50" cy="50" r="45" style="stroke-dashoffset: 99.05;"></circle>
+                        </svg>
+                    </div>
+                </div>
             </div>
 
-            <div class="clauses-container">
-                <div class="clause-item">
-                    <div class="clause-icon">🔴</div>
-                    <div class="clause-content">
-                        <h4>Data shared with third parties</h4>
-                        <p>Your personal information may be sold to advertising networks and data brokers without explicit consent.</p>
-                    </div>
-                    <div class="severity critical">Critical</div>
-                </div>
-
-                <div class="clause-item">
-                    <div class="clause-icon">⚠️</div>
-                    <div class="clause-content">
-                        <h4>Indefinite cookie retention</h4>
-                        <p>Cookies persist for 5+ years with no option to delete, creating a permanent tracking profile.</p>
-                    </div>
-                    <div class="severity high">High Risk</div>
-                </div>
-
-                <div class="clause-item">
-                    <div class="clause-icon">🌍</div>
-                    <div class="clause-content">
-                        <h4>International data transfer</h4>
-                        <p>Data transferred to countries with weaker privacy laws than your jurisdiction.</p>
-                    </div>
-                    <div class="severity high">High Risk</div>
-                </div>
-
-                <div class="clause-item">
-                    <div class="clause-icon">📱</div>
-                    <div class="clause-content">
-                        <h4>Cross-device tracking</h4>
-                        <p>Your activity is tracked across all your devices to build a comprehensive profile.</p>
-                    </div>
-                    <div class="severity medium">Medium Risk</div>
-                </div>
-
-                <div class="clause-item">
-                    <div class="clause-icon">🎯</div>
-                    <div class="clause-content">
-                        <h4>Sensitive data collection</h4>
-                        <p>Collects browsing history, health interests, and political views for ad targeting.</p>
-                    </div>
-                    <div class="severity critical">Critical</div>
-                </div>
-            </div>
-
-            <div style="margin-top: 2rem; text-align: center;">
-                <button style="background: linear-gradient(135deg, #4299e1, #667eea); border: none; color: white; padding: 12px 32px; border-radius: 50px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(66, 153, 225, 0.4);">
-                    🔒 Generate Privacy Report
-                </button>
-            </div>
-        </div>
-
-        <div class="footer">
-            CookieWise • AI-Powered Privacy Protection • Protecting your data in real-time
+            <button class="action-button" onclick="generateReport()">
+                ⚡ GENERATE THREAT REPORT ⚡
+            </button>
         </div>
     </main>
 
+    <footer class="footer-modern">
+        <span>🍪 CookieWise • AI-Powered Privacy Guardian • Real-time Threat Detection</span>
+        <div style="margin-top: 1rem; display: flex; gap: 2rem; justify-content: center;">
+            <span>⚡ ACTIVE SHIELD</span>
+            <span>🔒 128-bit ENCRYPTION</span>
+            <span>🛡️ ZERO TRUST</span>
+        </div>
+    </footer>
+
     <script>
+        // Generate floating particles
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDuration = (Math.random() * 10 + 10) + 's';
+                particle.style.animationDelay = Math.random() * 5 + 's';
+                particlesContainer.appendChild(particle);
+            }
+        }
+        
+        createParticles();
+
+        // Tab switching
         function showTab(tabId) {
-            // Hide all sections
             document.querySelectorAll('.section').forEach(section => {
                 section.classList.remove('active-section');
             });
-            
-            // Show selected section
             document.getElementById(tabId).classList.add('active-section');
             
-            // Update active button state
-            document.querySelectorAll('.nav-btn').forEach(btn => {
+            document.querySelectorAll('.nav-btn-modern').forEach(btn => {
                 btn.classList.remove('active');
             });
-            
-            // Find and highlight the clicked button
-            event.target.closest('.nav-btn').classList.add('active');
+            event.target.closest('.nav-btn-modern').classList.add('active');
         }
+
+        // Cycle through risk levels
+        let riskLevels = [25, 50, 75, 95];
+        let currentRiskIndex = 2;
+
+        function cycleRiskLevel() {
+            currentRiskIndex = (currentRiskIndex + 1) % riskLevels.length;
+            let percentage = riskLevels[currentRiskIndex];
+            
+            document.getElementById('riskScore').textContent = percentage + '%';
+            document.getElementById('gaugeFill').style.width = percentage + '%';
+            
+            // Change color based on risk
+            let color;
+            if (percentage <= 30) color = '#00ff00';
+            else if (percentage <= 60) color = '#ffff00';
+            else color = '#ff0000';
+            
+            document.getElementById('gaugeFill').style.background = `linear-gradient(90deg, ${color}, #f0f)`;
+        }
+
+        // Generate report with animation
+        function generateReport() {
+            const button = event.target;
+            button.textContent = '⚡ GENERATING REPORT... ⚡';
+            button.style.transform = 'scale(0.95)';
+            
+            setTimeout(() => {
+                button.textContent = '✅ REPORT GENERATED ✅';
+                button.style.transform = 'scale(1)';
+                
+                setTimeout(() => {
+                    button.textContent = '⚡ GENERATE THREAT REPORT ⚡';
+                }, 2000);
+            }, 1500);
+        }
+
+        // Add parallax effect to clauses
+        document.querySelectorAll('.clause-parallax-item').forEach((item, index) => {
+            item.addEventListener('mousemove', (e) => {
+                const rect = item.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                
+                const angleX = (y - centerY) / 20;
+                const angleY = (centerX - x) / 20;
+                
+                item.style.transform = `perspective(1000px) rotateX(${angleX}deg) rotateY(${angleY}deg) translateX(10px)`;
+            });
+            
+            item.addEventListener('mouseleave', () => {
+                item.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) translateX(10px)';
+            });
+        });
     </script>
 </body>
 </html>
