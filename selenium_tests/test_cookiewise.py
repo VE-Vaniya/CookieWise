@@ -206,6 +206,39 @@ class TestCookieBannerDetection:
             "check manifest host_permissions."
         )
 
+    # ── New Alert System Tests ────────────────────────────────────────
+
+    def test_status_alert_on_clean_site(self, driver):
+        """When no banner is detected, the extension should show a status alert overlay."""
+        # Use a site where no banner is expected
+        driver.get("https://example.com/")
+        
+        # Wait for the alert to be injected by content.js
+        wait = WebDriverWait(driver, 10)
+        try:
+            alert = wait.until(EC.presence_of_element_located((By.ID, "cookiewise-status-alert")))
+            assert alert.is_displayed()
+            assert "Unable to detect" in alert.text or "out of scope" in alert.text.lower()
+            print("\n  ✓ Status alert successfully detected on example.com")
+        except:
+            pytest.fail("Status alert '#cookiewise-status-alert' was not found on a page without a banner.")
+
+    def test_no_alert_on_banner_site(self, driver):
+        """When a banner IS detected, the status alert should NOT be shown."""
+        # BBC has a banner
+        driver.get("https://www.bbc.com/")
+        
+        # Give it a few seconds to perform detection
+        time.sleep(4)
+        
+        # Check if the alert exists
+        alerts = driver.find_elements(By.ID, "cookiewise-status-alert")
+        assert len(alerts) == 0, (
+            "Status alert was found on BBC.com, but it should ONLY show when "
+            "detection FAILS."
+        )
+        print("\n  ✓ No status alert shown on BBC (correctly suppressed by detection)")
+
 
 # ── Standalone runner (python test_cookiewise.py) ─────────────────────────
 if __name__ == "__main__":

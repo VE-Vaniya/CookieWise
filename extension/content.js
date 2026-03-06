@@ -202,15 +202,107 @@
   }
 
   /* ------------------------------------------------------------------ */
+  /*  STATUS ALERT — Shows a popup if detection fails or is out of scope */
+  /* ------------------------------------------------------------------ */
+  let alertShown = false;
+
+  function showAlert(message) {
+    if (alertShown || document.getElementById("cookiewise-status-alert")) return;
+    alertShown = true;
+
+    // Add styles if not present
+    if (!document.getElementById("cookiewise-styles")) {
+      const styleEl = document.createElement("style");
+      styleEl.id = "cookiewise-styles";
+      styleEl.textContent = `
+        #cookiewise-status-alert {
+          position: fixed;
+          top: 20px;
+          right: 20px;
+          background: rgba(30, 30, 30, 0.9);
+          color: white;
+          padding: 14px 22px;
+          border-radius: 12px;
+          z-index: 2147483647;
+          box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+          font-family: 'Segoe UI', Roboto, sans-serif;
+          font-size: 14px;
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          backdrop-filter: blur(10px);
+          border: 1px solid rgba(255,255,255,0.1);
+          transform: translateX(100px);
+          opacity: 0;
+          transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+        #cookiewise-status-alert.cw-visible {
+          transform: translateX(0);
+          opacity: 1;
+        }
+        #cookiewise-status-alert .cw-close {
+          cursor: pointer;
+          opacity: 0.6;
+          padding: 4px;
+          margin-left: 10px;
+          transition: opacity 0.2s;
+        }
+        #cookiewise-status-alert .cw-close:hover { opacity: 1; }
+      `;
+      document.head.appendChild(styleEl);
+    }
+
+    const alert = document.createElement("div");
+    alert.id = "cookiewise-status-alert";
+    alert.innerHTML = `
+      <span style="font-size: 18px">⚠️</span>
+      <span>${message}</span>
+      <span class="cw-close">✕</span>
+    `;
+
+    document.body.appendChild(alert);
+
+    // Trigger animation
+    setTimeout(() => alert.classList.add("cw-visible"), 100);
+
+    const closeAlert = () => {
+      alert.classList.remove("cw-visible");
+      setTimeout(() => alert.remove(), 500);
+    };
+
+    alert.querySelector(".cw-close").onclick = closeAlert;
+
+    // Auto-hide after 6 seconds
+    setTimeout(closeAlert, 6000);
+  }
+
+  /* ------------------------------------------------------------------ */
+  /*  RUN + REPORT                                                        */
+  /* ------------------------------------------------------------------ */
+  function hideAlert() {
+    const alert = document.getElementById("cookiewise-status-alert");
+    if (alert) {
+      alert.classList.remove("cw-visible");
+      setTimeout(() => alert.remove(), 500);
+    }
+  }
+
+  /* ------------------------------------------------------------------ */
   /*  RUN + REPORT                                                        */
   /* ------------------------------------------------------------------ */
   function run() {
-    const result = detectBanner();
+    let result;
+    try {
+      result = detectBanner();
+    } catch (e) {
+      console.error("CookieWise Detection Error:", e);
+      result = { found: false, error: true };
+    }
 
     // Store result in sessionStorage so popup can read it synchronously
     try {
       sessionStorage.setItem("cookiewise_result", JSON.stringify(result));
-    } catch (_) {}
+    } catch (_) { }
 
     // Notify background script to update the toolbar badge
     chrome.runtime.sendMessage({
@@ -221,6 +313,17 @@
         timestamp: Date.now(),
       },
     });
+
+    if (result.found) {
+      // If we found a banner (either now or via late observer), hide the failure alert
+      hideAlert();
+    } else {
+      // Show failure alert only if it hasn't been shown yet or it's a critical error
+      const msg = result.error
+        ? "CookieWise: Detection engine encountered an error on this site."
+        : "CookieWise: Unable to detect cookie banner or out of scope.";
+      showAlert(msg);
+    }
   }
 
   // Run immediately (document_idle — DOM is ready)
@@ -236,7 +339,7 @@
         try {
           const prev = JSON.parse(cached);
           if (prev.found) return; // already detected — no need to re-run
-        } catch (_) {}
+        } catch (_) { }
       }
       run();
     }, 600);

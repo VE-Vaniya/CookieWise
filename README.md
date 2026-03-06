@@ -14,6 +14,7 @@ A Chrome extension that **automatically detects cookie consent banners** on ever
 | **MutationObserver** | Catches late-injected banners from SPAs and lazy-loaded CMPs |
 | **Toolbar badge** | Red `!` badge appears instantly when a banner is found; cleared on clean pages |
 | **Rich popup** | Shows detection method, matched selector, and a text snippet from the banner |
+| **Status Alert Overlay** | Shows a premium top-page alert if a banner is unable to be detected or is out of scope |
 | **Selenium test suite** | Automated Python tests against real sites (BBC, NYT, CNN, Guardian, Reuters…) |
 
 ---
@@ -74,15 +75,18 @@ Requires 2+ keyword hits in any visible element — catches edge cases missed by
 
 A **MutationObserver** re-runs detection for 15 seconds after page load to handle banners injected by SPAs or lazy-loaded scripts.
 
+### Pass 4 — Status Alert
+If no banner is detected after the initial pass, CookieWise injects a non-intrusive but visible alert at the top-right of the page to notify you that the site is either out of scope or detection failed.
+
 ---
 
 ## 🏅 Toolbar Badge
 
 | State | Badge | Meaning |
 |---|---|---|
-| Banner detected | 🔴 `!` | Cookie consent banner found |
-| No banner | *(no badge)* | Page has no cookie banner |
-| Loading / unsupported | *(no badge)* | Waiting for scan result or non-http page |
+| Banner detected | 🔴 `!` | Cookie banner found (No alert shown) |
+| No banner found | *(no badge)* | Alert shown: "Unable to detect or out of scope" |
+| Loading | *(no badge)* | Waiting for scan result |
 
 ---
 
