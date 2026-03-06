@@ -100,6 +100,11 @@ function renderNoData() {
   statusDot.className = "dot idle";
   footerStatus.textContent = "No data yet";
 }
+document.getElementById("openDashboard").addEventListener("click", () => {
+  chrome.tabs.create({
+    url: chrome.runtime.getURL("dashboard.html")
+  });
+});
 
 /* ── Main ─────────────────────────────────────────────────────── */
 async function init() {
