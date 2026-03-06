@@ -35,6 +35,16 @@ function applyBadge(tabId, found) {
   chrome.action.setBadgeText({ tabId, text: cfg.text });
   chrome.action.setBadgeBackgroundColor({ tabId, color: cfg.color });
   chrome.action.setTitle({ tabId, title: cfg.title });
+  // Show notification popup if banner detected
+if (payload.found) {
+  chrome.notifications.create({
+    type: "basic",
+    iconUrl: "icons/icon128.png",
+    title: "CookieWise Alert",
+    message: "Cookie banner detected on this site. Click to view details.",
+    priority: 2
+  });
+}
 }
 
 /* ------------------------------------------------------------------ */
@@ -92,4 +102,10 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       .catch(() => sendResponse(null));
     return true; // keep channel open for async response
   }
+});
+
+chrome.notifications.onClicked.addListener(() => {
+  chrome.tabs.create({
+    url: chrome.runtime.getURL("dashboard.html")
+  });
 });
