@@ -1,0 +1,1209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CookieWise — Data Flow Map</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', 'Inter', system-ui, sans-serif;
+            background: radial-gradient(ellipse at top, #1a1f35, #0a0c1a);
+            color: #ffffff;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Cyber Grid Effect */
+        .cyber-grid {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(0, 255, 255, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 255, 255, 0.05) 1px, transparent 1px);
+            background-size: 40px 40px;
+            pointer-events: none;
+            z-index: 0;
+            animation: gridPulse 4s infinite;
+        }
+
+        @keyframes gridPulse {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.6; }
+        }
+
+        /* Floating Particles */
+        .particle {
+            position: fixed;
+            width: 4px;
+            height: 4px;
+            background: cyan;
+            border-radius: 50%;
+            pointer-events: none;
+            opacity: 0.5;
+            filter: blur(1px);
+            animation: floatParticle linear infinite;
+        }
+
+        @keyframes floatParticle {
+            from { transform: translateY(100vh) rotate(0deg); }
+            to { transform: translateY(-100vh) rotate(360deg); }
+        }
+
+        /* 3D Cube Animation */
+        .cube-bg {
+            position: fixed;
+            width: 300px;
+            height: 300px;
+            right: -100px;
+            bottom: -100px;
+            transform-style: preserve-3d;
+            animation: cubeRotate 20s infinite linear;
+            opacity: 0.1;
+            z-index: 0;
+        }
+
+        .cube-bg div {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border: 2px solid cyan;
+            box-shadow: 0 0 20px cyan;
+        }
+
+        .cube-bg .front { transform: translateZ(150px); }
+        .cube-bg .back { transform: rotateY(180deg) translateZ(150px); }
+        .cube-bg .right { transform: rotateY(90deg) translateZ(150px); }
+        .cube-bg .left { transform: rotateY(-90deg) translateZ(150px); }
+        .cube-bg .top { transform: rotateX(90deg) translateZ(150px); }
+        .cube-bg .bottom { transform: rotateX(-90deg) translateZ(150px); }
+
+        @keyframes cubeRotate {
+            from { transform: rotateX(0deg) rotateY(0deg); }
+            to { transform: rotateX(360deg) rotateY(360deg); }
+        }
+
+        /* Navigation */
+        .glass-nav {
+            background: rgba(10, 20, 40, 0.8);
+            backdrop-filter: blur(15px);
+            border-bottom: 2px solid rgba(0, 255, 255, 0.3);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 10px 30px rgba(0, 255, 255, 0.1);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.5rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .logo-icon {
+            font-size: 2rem;
+            filter: drop-shadow(0 0 10px cyan);
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+
+        .logo-text {
+            background: linear-gradient(135deg, #fff, cyan);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-tabs-modern {
+            display: flex;
+            gap: 12px;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 6px;
+            border-radius: 40px;
+            border: 1px solid rgba(0, 255, 255, 0.3);
+        }
+
+        .nav-btn-modern {
+            padding: 12px 28px;
+            border: none;
+            background: transparent;
+            color: #94a3b8;
+            border-radius: 30px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-btn-modern::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(0, 255, 255, 0.2);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .nav-btn-modern:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .nav-btn-modern.active {
+            background: linear-gradient(135deg, cyan, #00f);
+            color: white;
+            box-shadow: 0 5px 20px cyan;
+        }
+
+        .status-hologram {
+            background: rgba(0, 255, 255, 0.1);
+            border: 1px solid cyan;
+            color: cyan;
+            padding: 8px 16px;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .status-hologram::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(0, 255, 255, 0.2), transparent);
+            animation: shine 3s infinite;
+        }
+
+        @keyframes shine {
+            from { transform: translateX(-100%) rotate(45deg); }
+            to { transform: translateX(100%) rotate(45deg); }
+        }
+
+        .pulse-ring {
+            width: 10px;
+            height: 10px;
+            background: cyan;
+            border-radius: 50%;
+            box-shadow: 0 0 20px cyan;
+            animation: pulseRing 2s infinite;
+        }
+
+        @keyframes pulseRing {
+            0% { box-shadow: 0 0 0 0 cyan; }
+            70% { box-shadow: 0 0 20px 10px rgba(0, 255, 255, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(0, 255, 255, 0); }
+        }
+
+        /* Main Content */
+        .main-content {
+            position: relative;
+            z-index: 10;
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        /* Interactive Cards */
+        .section {
+            display: none;
+            animation: slideIn 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        .section.active-section {
+            display: block;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        /* 3D Risk Meter */
+        .risk-meter-3d {
+            perspective: 1000px;
+            margin-bottom: 2rem;
+        }
+
+        .risk-card-3d {
+            background: rgba(20, 30, 50, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            border-radius: 30px;
+            padding: 2rem;
+            transform-style: preserve-3d;
+            transition: transform 0.3s;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .risk-card-3d:hover {
+            transform: rotateX(5deg) rotateY(5deg);
+        }
+
+        .risk-header-modern {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .risk-title {
+            font-size: 1.2rem;
+            color: cyan;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            text-shadow: 0 0 10px cyan;
+        }
+
+        .risk-score {
+            font-size: 4rem;
+            font-weight: 800;
+            line-height: 1;
+            background: linear-gradient(135deg, #ff6b6b, #f0f);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            filter: drop-shadow(0 0 20px rgba(255, 0, 255, 0.5));
+        }
+
+        /* Interactive Gauge */
+        .gauge-container {
+            position: relative;
+            height: 30px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            margin: 2rem 0;
+            border: 1px solid cyan;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .gauge-fill {
+            height: 100%;
+            width: 75%;
+            background: linear-gradient(90deg, #00ff87, #60efff, #0061ff);
+            border-radius: 15px;
+            position: relative;
+            transition: width 1s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        .gauge-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 10px;
+            height: 100%;
+            background: white;
+            filter: blur(10px);
+            animation: scan 2s infinite;
+        }
+
+        @keyframes scan {
+            from { right: 100%; opacity: 0; }
+            to { right: 0; opacity: 1; }
+        }
+
+        .gauge-markers {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 0.5rem;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .marker {
+            width: 2px;
+            height: 10px;
+            background: cyan;
+            transform: rotate(15deg);
+        }
+
+        /* Interactive Category Cards */
+        .category-grid-interactive {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .flip-card {
+            background: transparent;
+            height: 300px;
+            perspective: 1000px;
+            cursor: pointer;
+        }
+
+        .flip-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.8s;
+            transform-style: preserve-3d;
+        }
+
+        .flip-card:hover .flip-card-inner {
+            transform: rotateY(180deg);
+        }
+
+        .flip-card-front, .flip-card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 20px;
+            padding: 1.5rem;
+            background: rgba(20, 30, 50, 0.9);
+            backdrop-filter: blur(10px);
+            border: 1px solid cyan;
+            box-shadow: 0 10px 30px rgba(0, 255, 255, 0.2);
+        }
+
+        .flip-card-front {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .flip-card-front .icon-3d {
+            font-size: 4rem;
+            animation: float 3s infinite;
+        }
+
+        .flip-card-back {
+            transform: rotateY(180deg);
+            text-align: left;
+            overflow-y: auto;
+        }
+
+        .risk-badge-interactive {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            animation: glow 2s infinite;
+        }
+
+        .risk-badge-interactive.high {
+            background: rgba(255, 0, 0, 0.2);
+            color: #ff6b6b;
+            border: 1px solid #ff6b6b;
+            box-shadow: 0 0 15px #ff6b6b;
+        }
+
+        .risk-badge-interactive.medium {
+            background: rgba(255, 255, 0, 0.2);
+            color: #ffd93d;
+            border: 1px solid #ffd93d;
+            box-shadow: 0 0 15px #ffd93d;
+        }
+
+        @keyframes glow {
+            0%, 100% { filter: brightness(1); }
+            50% { filter: brightness(1.3); }
+        }
+
+        /* Interactive Heatmap */
+        .heatmap-3d {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .heatmap-tower {
+            background: rgba(20, 30, 50, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid cyan;
+            border-radius: 20px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .heatmap-tower:hover {
+            transform: translateY(-10px) scale(1.05);
+            box-shadow: 0 20px 40px cyan;
+        }
+
+        .tower-container {
+            height: 150px;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            gap: 8px;
+            margin: 1rem 0;
+        }
+
+        .tower-block {
+            width: 30px;
+            background: linear-gradient(180deg, cyan, #00f);
+            border-radius: 8px 8px 0 0;
+            transition: height 0.3s;
+            position: relative;
+            animation: towerGlow 2s infinite;
+        }
+
+        @keyframes towerGlow {
+            0%, 100% { filter: brightness(1); }
+            50% { filter: brightness(1.5); }
+        }
+
+        .tower-label {
+            font-size: 0.9rem;
+            color: cyan;
+            margin-top: 0.5rem;
+        }
+
+        /* Dangerous Clauses with Parallax */
+        .clauses-parallax {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .clause-parallax-item {
+            background: rgba(20, 30, 50, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 0, 0, 0.3);
+            border-radius: 20px;
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            transition: all 0.3s;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .clause-parallax-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 0, 0, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .clause-parallax-item:hover::before {
+            left: 100%;
+        }
+
+        .clause-parallax-item:hover {
+            transform: translateX(10px) scale(1.02);
+            border-color: red;
+            box-shadow: -10px 10px 30px rgba(255, 0, 0, 0.3);
+        }
+
+        .clause-icon-3d {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, rgba(255, 0, 0, 0.2), rgba(255, 0, 255, 0.2));
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            transform: rotate(10deg);
+            transition: transform 0.3s;
+        }
+
+        .clause-parallax-item:hover .clause-icon-3d {
+            transform: rotate(0deg) scale(1.1);
+        }
+
+        .severity-meter {
+            width: 100px;
+            height: 100px;
+            position: relative;
+        }
+
+        .severity-svg {
+            width: 100%;
+            height: 100%;
+            transform: rotate(-90deg);
+        }
+
+        .severity-circle-bg {
+            fill: none;
+            stroke: rgba(255, 255, 255, 0.1);
+            stroke-width: 8;
+        }
+
+        .severity-circle-fill {
+            fill: none;
+            stroke-width: 8;
+            stroke-linecap: round;
+            stroke-dasharray: 283;
+            stroke-dashoffset: calc(283 - (283 * var(--percent)) / 100);
+            transition: stroke-dashoffset 0.5s;
+        }
+
+        .severity-circle-fill.critical { stroke: #ff0000; }
+        .severity-circle-fill.high { stroke: #ff6b00; }
+        .severity-circle-fill.medium { stroke: #ffd93d; }
+
+        /* Action Button */
+        .action-button {
+            background: linear-gradient(135deg, cyan, #00f);
+            border: none;
+            color: white;
+            padding: 16px 40px;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s;
+            margin: 2rem auto;
+            display: block;
+            box-shadow: 0 10px 30px cyan;
+        }
+
+        .action-button::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .action-button:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .action-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 20px 40px cyan;
+        }
+
+        /* Footer */
+        .footer-modern {
+            text-align: center;
+            padding: 2rem;
+            color: rgba(0, 255, 255, 0.5);
+            font-size: 0.9rem;
+            position: relative;
+            z-index: 10;
+            border-top: 1px solid rgba(0, 255, 255, 0.2);
+            margin-top: 2rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .glass-nav {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .flip-card {
+                height: 250px;
+            }
+            
+            .clause-parallax-item {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+    
+        /* Make anchor nav buttons look identical to buttons */
+        a.nav-btn-modern {
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+    </style>
+
+<body>
+    <div class="cyber-grid"></div>
+    <div id="particles"></div>
+    <div class="cube-bg">
+        <div class="front"></div><div class="back"></div>
+        <div class="right"></div><div class="left"></div>
+        <div class="top"></div><div class="bottom"></div>
+    </div>
+
+    <nav class="glass-nav">
+        <div class="logo">
+            <span class="logo-icon">🍪</span>
+            <span class="logo-text">CookieWise</span>
+        </div>
+        <div class="nav-tabs-modern">
+            <a href="risk-score.html" class="nav-btn-modern"><span>📊</span> Risk Score</a>
+            <a href="data-flow-map.html" class="nav-btn-modern active"><span>🌐</span> Data Flow Map</a>
+            <a href="threat-scan.html" class="nav-btn-modern"><span>⚠️</span> Threat Scan</a>
+        </div>
+        <div class="status-hologram">
+            <span class="pulse-ring"></span>
+            ACTIVE SCAN: example.com
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div id="heatmap" class="section active-section">
+            <h1 style="text-align:center; margin-bottom:0.4rem; background:linear-gradient(135deg,cyan,#f0f); -webkit-background-clip:text; -webkit-text-fill-color:transparent; font-size:2rem; letter-spacing:0.04em;">
+                🌐 GLOBAL DATA FLOW MAP
+            </h1>
+            <p style="text-align:center; color:#64748b; margin-bottom:2rem; font-size:0.82rem; letter-spacing:0.1em; text-transform:uppercase;">Where your data travels after you click Accept</p>
+
+            <style>
+                .dfm2-wrap {
+                    background: rgba(10,16,32,0.85);
+                    backdrop-filter: blur(12px);
+                    border-radius: 24px;
+                    padding: 1.5rem;
+                    border: 1px solid rgba(0,255,255,0.2);
+                }
+                /* Legend */
+                .dfm2-legend {
+                    display: flex;
+                    flex-wrap: wrap;
+                    justify-content: center;
+                    gap: 1.2rem;
+                    margin-bottom: 1.4rem;
+                    padding: 0.7rem 1.2rem;
+                    background: rgba(0,0,0,0.35);
+                    border-radius: 50px;
+                }
+                .dfm2-legend-item {
+                    display: flex;
+                    align-items: center;
+                    gap: 7px;
+                    color: #94a3b8;
+                    font-size: 11.5px;
+                    text-transform: uppercase;
+                    letter-spacing: 0.06em;
+                }
+                .dfm2-dot {
+                    width: 11px; height: 11px;
+                    border-radius: 50%;
+                    flex-shrink: 0;
+                }
+                .dfm2-dot.consent  { background:#ffd93d; box-shadow:0 0 8px #ffd93d; }
+                .dfm2-dot.legit    { background:#818cf8; box-shadow:0 0 8px #818cf8; }
+                .dfm2-dot.third    { background:#ff6b6b; box-shadow:0 0 8px #ff6b6b; }
+                .dfm2-line-legend  { width:28px; height:2px; background:cyan; position:relative; }
+                .dfm2-line-legend::after {
+                    content:''; position:absolute; right:-4px; top:-3px;
+                    border-left:6px solid cyan;
+                    border-top:4px solid transparent;
+                    border-bottom:4px solid transparent;
+                }
+
+                /* Map container */
+                .dfm2-map-wrap {
+                    position: relative;
+                    border-radius: 16px;
+                    overflow: hidden;
+                    background: rgba(0,0,0,0.3);
+                    border: 1px solid rgba(0,255,255,0.1);
+                }
+                .dfm2-svg { width:100%; height:auto; display:block; cursor:pointer; }
+
+                /* Pulse rings on YOU node */
+                .dfm2-pulse {
+                    fill: none;
+                    stroke: cyan;
+                    stroke-width: 1.5;
+                    animation: dfm2Pulse 2.4s ease-out infinite;
+                }
+                .dfm2-pulse:nth-child(2) { animation-delay:.8s; }
+                .dfm2-pulse:nth-child(3) { animation-delay:1.6s; }
+                @keyframes dfm2Pulse {
+                    0%   { r:12; opacity:.9; }
+                    100% { r:45; opacity:0; }
+                }
+
+                /* Destination nodes */
+                .dfm2-dest { cursor:pointer; transition:filter .25s; }
+                .dfm2-dest:hover { filter: brightness(1.6) drop-shadow(0 0 14px currentColor); }
+                .dfm2-dest.consent { fill:#ffd93d; }
+                .dfm2-dest.legit   { fill:#818cf8; }
+                .dfm2-dest.third   { fill:#ff6b6b; }
+
+                /* Flow paths */
+                .dfm2-path { fill:none; stroke-width:1.8; stroke-dasharray:8 7; opacity:.55; }
+                .dfm2-path.consent { stroke:#ffd93d; }
+                .dfm2-path.legit   { stroke:#818cf8; }
+                .dfm2-path.third   { stroke:#ff6b6b; }
+
+                /* Moving data packets */
+                .dfm2-pkt { filter: drop-shadow(0 0 6px currentColor); }
+                .dfm2-pkt.consent { fill:#ffd93d; }
+                .dfm2-pkt.legit   { fill:#818cf8; }
+                .dfm2-pkt.third   { fill:#ff6b6b; }
+
+                /* Tooltip */
+                .dfm2-tooltip {
+                    position: absolute;
+                    display: none;
+                    background: rgba(8,14,28,0.97);
+                    backdrop-filter: blur(14px);
+                    border: 1px solid rgba(0,255,255,0.35);
+                    border-radius: 12px;
+                    padding: 12px 16px;
+                    pointer-events: none;
+                    z-index: 20;
+                    min-width: 200px;
+                    max-width: 240px;
+                    box-shadow: 0 8px 32px rgba(0,255,255,0.15);
+                }
+                .dfm2-tt-country { font-size:15px; font-weight:700; color:cyan; margin-bottom:5px; }
+                .dfm2-tt-risk {
+                    display:inline-block; padding:3px 9px; border-radius:20px;
+                    font-size:10.5px; font-weight:700; letter-spacing:.05em;
+                    margin-bottom:6px;
+                }
+                .dfm2-tt-risk.critical { background:rgba(255,0,0,.18); color:#ff6b6b; border:1px solid #ff6b6b; }
+                .dfm2-tt-risk.high     { background:rgba(255,130,0,.18); color:#ffb86b; border:1px solid #ffb86b; }
+                .dfm2-tt-risk.medium   { background:rgba(255,220,0,.18); color:#ffd93d; border:1px solid #ffd93d; }
+                .dfm2-tt-risk.low      { background:rgba(130,255,130,.18); color:#86efac; border:1px solid #86efac; }
+                .dfm2-tt-desc { font-size:12px; color:#cbd5e1; line-height:1.5; margin-bottom:6px; }
+                .dfm2-tt-consent { font-size:10.5px; color:#64748b; border-top:1px solid rgba(0,255,255,.15); padding-top:6px; }
+
+                /* Stats */
+                .dfm2-stats {
+                    display: grid;
+                    grid-template-columns: repeat(3, 1fr);
+                    gap: 1rem;
+                    margin-top: 1.4rem;
+                }
+                .dfm2-stat {
+                    background: rgba(0,0,0,.35);
+                    border-radius: 14px;
+                    padding: 1.2rem 1rem;
+                    text-align: center;
+                    border: 1px solid rgba(0,255,255,.12);
+                    transition: transform .25s, border-color .25s, box-shadow .25s;
+                }
+                .dfm2-stat:hover {
+                    transform: translateY(-4px);
+                    border-color: cyan;
+                    box-shadow: 0 8px 28px rgba(0,255,255,.18);
+                }
+                .dfm2-stat-h { color:#64748b; font-size:11px; text-transform:uppercase; letter-spacing:.08em; margin-bottom:.7rem; }
+                .dfm2-stat-n {
+                    font-size:2.6rem; font-weight:800; line-height:1;
+                    background:linear-gradient(135deg,cyan,#f0f);
+                    -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+                    margin-bottom:.4rem;
+                }
+                .dfm2-stat-n.red  { background:linear-gradient(135deg,#ff6b6b,#f0f); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+                .dfm2-stat-sub { font-size:11.5px; color:#64748b; }
+                .dfm2-breakdown div { display:flex; align-items:center; gap:7px; color:#94a3b8; font-size:12px; margin:5px 0; }
+                .dfm2-bd-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
+            </style>
+
+            <div class="dfm2-wrap">
+                <!-- Legend -->
+                <div class="dfm2-legend">
+                    <div class="dfm2-legend-item"><span class="dfm2-dot consent"></span>Consent Required</div>
+                    <div class="dfm2-legend-item"><span class="dfm2-dot legit"></span>Legitimate Interest</div>
+                    <div class="dfm2-legend-item"><span class="dfm2-dot third"></span>Third-Party Sharing</div>
+                    <div class="dfm2-legend-item"><span class="dfm2-line-legend"></span>Data Flow</div>
+                </div>
+
+                <!-- SVG world map -->
+                <div class="dfm2-map-wrap" id="dfm2MapWrap">
+                    <svg class="dfm2-svg" id="dfm2Svg" viewBox="0 0 1000 500">
+                        <defs>
+                            <pattern id="dfm2grid" patternUnits="userSpaceOnUse" width="40" height="40">
+                                <path d="M40 0L0 0 0 40" fill="none" stroke="rgba(0,255,255,0.07)" stroke-width="1"/>
+                            </pattern>
+                            <filter id="dfm2glow">
+                                <feDropShadow dx="0" dy="0" stdDeviation="4" flood-color="cyan" flood-opacity=".5"/>
+                            </filter>
+                            <filter id="dfm2glowY">
+                                <feDropShadow dx="0" dy="0" stdDeviation="8" flood-color="cyan" flood-opacity=".9"/>
+                            </filter>
+                            <filter id="dfm2glowR">
+                                <feDropShadow dx="0" dy="0" stdDeviation="5" flood-color="#ff6b6b" flood-opacity=".7"/>
+                            </filter>
+                        </defs>
+
+                        <!-- Grid bg -->
+                        <rect width="1000" height="500" fill="url(#dfm2grid)"/>
+
+                        <!-- ── Simplified continent outlines ── -->
+                        <!-- North America -->
+                        <path fill="rgba(0,255,255,0.06)" stroke="rgba(0,255,255,0.25)" stroke-width="1.2"
+                              d="M100,80 L200,70 L260,90 L280,120 L270,160 L250,200 L230,250 L200,280 L180,260 L160,220 L130,180 L100,150 L80,120 Z"/>
+                        <!-- South America -->
+                        <path fill="rgba(0,255,255,0.06)" stroke="rgba(0,255,255,0.25)" stroke-width="1.2"
+                              d="M200,280 L240,270 L270,290 L280,330 L270,380 L250,420 L220,440 L200,420 L185,380 L180,330 L190,300 Z"/>
+                        <!-- Europe -->
+                        <path fill="rgba(0,255,255,0.06)" stroke="rgba(0,255,255,0.25)" stroke-width="1.2"
+                              d="M420,60 L480,55 L510,70 L520,100 L510,130 L490,150 L460,155 L440,140 L420,120 L410,90 Z"/>
+                        <!-- Africa -->
+                        <path fill="rgba(0,255,255,0.06)" stroke="rgba(0,255,255,0.25)" stroke-width="1.2"
+                              d="M430,160 L490,155 L520,180 L530,230 L520,290 L500,340 L470,370 L440,360 L420,320 L410,270 L415,210 Z"/>
+                        <!-- Russia / North Asia -->
+                        <path fill="rgba(0,255,255,0.06)" stroke="rgba(0,255,255,0.25)" stroke-width="1.2"
+                              d="M520,50 L680,40 L800,55 L840,80 L820,110 L760,120 L680,115 L620,120 L560,110 L530,85 Z"/>
+                        <!-- Asia (main) -->
+                        <path fill="rgba(0,255,255,0.06)" stroke="rgba(0,255,255,0.25)" stroke-width="1.2"
+                              d="M580,110 L740,115 L820,130 L850,160 L840,200 L800,230 L740,240 L680,230 L640,210 L600,200 L570,170 L560,140 Z"/>
+                        <!-- Australia -->
+                        <path fill="rgba(0,255,255,0.06)" stroke="rgba(0,255,255,0.25)" stroke-width="1.2"
+                              d="M780,330 L860,320 L900,340 L910,380 L890,410 L850,420 L800,410 L770,380 L770,350 Z"/>
+
+                        <!-- ── YOU node (centre-ish, Europe area represents browser) ── -->
+                        <g id="dfm2You" filter="url(#dfm2glowY)">
+                            <circle class="dfm2-pulse" cx="467" cy="108" r="12"/>
+                            <circle class="dfm2-pulse" cx="467" cy="108" r="12" style="animation-delay:.8s"/>
+                            <circle class="dfm2-pulse" cx="467" cy="108" r="12" style="animation-delay:1.6s"/>
+                            <circle cx="467" cy="108" r="9" fill="cyan" opacity=".95"/>
+                            <circle cx="467" cy="108" r="5" fill="#0a0e1a"/>
+                            <text x="467" y="93" text-anchor="middle" fill="cyan" font-size="11" font-weight="700" font-family="monospace">YOU</text>
+                        </g>
+
+                        <!-- ── Flow paths (drawn first so nodes sit on top) ── -->
+                        <!-- USA -->
+                        <path id="dfm2p-usa"   class="dfm2-path consent" d="M467,108 Q300,80 190,140"/>
+                        <!-- EU -->
+                        <path id="dfm2p-eu"    class="dfm2-path legit"   d="M467,108 Q455,125 465,145"/>
+                        <!-- UK -->
+                        <path id="dfm2p-uk"    class="dfm2-path legit"   d="M467,108 Q445,100 435,100"/>
+                        <!-- China -->
+                        <path id="dfm2p-cn"    class="dfm2-path third"   d="M467,108 Q640,120 760,175"/>
+                        <!-- India -->
+                        <path id="dfm2p-in"    class="dfm2-path third"   d="M467,108 Q600,150 690,210"/>
+                        <!-- Brazil -->
+                        <path id="dfm2p-br"    class="dfm2-path legit"   d="M467,108 Q340,240 235,315"/>
+                        <!-- Australia -->
+                        <path id="dfm2p-au"    class="dfm2-path legit"   d="M467,108 Q680,280 845,365"/>
+                        <!-- Japan -->
+                        <path id="dfm2p-jp"    class="dfm2-path consent" d="M467,108 Q700,90 860,140"/>
+                        <!-- Russia -->
+                        <path id="dfm2p-ru"    class="dfm2-path third"   d="M467,108 Q600,70 690,75"/>
+
+                        <!-- ── Destination nodes ── -->
+                        <!-- USA -->
+                        <g class="dfm2-dest-g" data-id="usa">
+                            <circle id="dfm2n-usa" class="dfm2-dest consent" cx="190" cy="140" r="9" filter="url(#dfm2glow)"/>
+                            <text x="190" y="128" text-anchor="middle" fill="#e2e8f0" font-size="10" font-family="monospace">🇺🇸 USA</text>
+                        </g>
+                        <!-- EU -->
+                        <g class="dfm2-dest-g" data-id="eu">
+                            <circle id="dfm2n-eu" class="dfm2-dest legit" cx="465" cy="155" r="8" filter="url(#dfm2glow)"/>
+                            <text x="465" y="143" text-anchor="middle" fill="#e2e8f0" font-size="10" font-family="monospace">🇪🇺 EU</text>
+                        </g>
+                        <!-- UK -->
+                        <g class="dfm2-dest-g" data-id="uk">
+                            <circle id="dfm2n-uk" class="dfm2-dest legit" cx="430" cy="100" r="7" filter="url(#dfm2glow)"/>
+                            <text x="430" y="88" text-anchor="middle" fill="#e2e8f0" font-size="10" font-family="monospace">🇬🇧 UK</text>
+                        </g>
+                        <!-- China -->
+                        <g class="dfm2-dest-g" data-id="cn">
+                            <circle id="dfm2n-cn" class="dfm2-dest third" cx="760" cy="175" r="11" filter="url(#dfm2glowR)"/>
+                            <text x="760" y="163" text-anchor="middle" fill="#e2e8f0" font-size="10" font-family="monospace">🇨🇳 China</text>
+                        </g>
+                        <!-- India -->
+                        <g class="dfm2-dest-g" data-id="in">
+                            <circle id="dfm2n-in" class="dfm2-dest third" cx="690" cy="210" r="9" filter="url(#dfm2glowR)"/>
+                            <text x="690" y="198" text-anchor="middle" fill="#e2e8f0" font-size="10" font-family="monospace">🇮🇳 India</text>
+                        </g>
+                        <!-- Brazil -->
+                        <g class="dfm2-dest-g" data-id="br">
+                            <circle id="dfm2n-br" class="dfm2-dest legit" cx="235" cy="315" r="8" filter="url(#dfm2glow)"/>
+                            <text x="235" y="303" text-anchor="middle" fill="#e2e8f0" font-size="10" font-family="monospace">🇧🇷 Brazil</text>
+                        </g>
+                        <!-- Australia -->
+                        <g class="dfm2-dest-g" data-id="au">
+                            <circle id="dfm2n-au" class="dfm2-dest legit" cx="845" cy="365" r="7" filter="url(#dfm2glow)"/>
+                            <text x="845" y="353" text-anchor="middle" fill="#e2e8f0" font-size="10" font-family="monospace">🇦🇺 AU</text>
+                        </g>
+                        <!-- Japan -->
+                        <g class="dfm2-dest-g" data-id="jp">
+                            <circle id="dfm2n-jp" class="dfm2-dest consent" cx="860" cy="140" r="8" filter="url(#dfm2glow)"/>
+                            <text x="860" y="128" text-anchor="middle" fill="#e2e8f0" font-size="10" font-family="monospace">🇯🇵 Japan</text>
+                        </g>
+                        <!-- Russia -->
+                        <g class="dfm2-dest-g" data-id="ru">
+                            <circle id="dfm2n-ru" class="dfm2-dest third" cx="690" cy="75" r="9" filter="url(#dfm2glowR)"/>
+                            <text x="690" y="63" text-anchor="middle" fill="#e2e8f0" font-size="10" font-family="monospace">🇷🇺 Russia</text>
+                        </g>
+
+                        <!-- ── Animated data packets ── -->
+                        <circle id="dpkt-usa" r="4" class="dfm2-pkt consent"><animateMotion dur="6s" repeatCount="indefinite" path="M467,108 Q300,80 190,140"/></circle>
+                        <circle id="dpkt-eu"  r="3.5" class="dfm2-pkt legit"><animateMotion dur="4s" repeatCount="indefinite" begin="1s" path="M467,108 Q455,125 465,145"/></circle>
+                        <circle id="dpkt-cn"  r="5" class="dfm2-pkt third"><animateMotion dur="7s" repeatCount="indefinite" begin="0.5s" path="M467,108 Q640,120 760,175"/></circle>
+                        <circle id="dpkt-cn2" r="5" class="dfm2-pkt third"><animateMotion dur="7s" repeatCount="indefinite" begin="3.5s" path="M467,108 Q640,120 760,175"/></circle>
+                        <circle id="dpkt-in"  r="4" class="dfm2-pkt third"><animateMotion dur="5.5s" repeatCount="indefinite" begin="2s" path="M467,108 Q600,150 690,210"/></circle>
+                        <circle id="dpkt-jp"  r="3.5" class="dfm2-pkt consent"><animateMotion dur="8s" repeatCount="indefinite" begin="1.5s" path="M467,108 Q700,90 860,140"/></circle>
+                        <circle id="dpkt-ru"  r="4" class="dfm2-pkt third"><animateMotion dur="5s" repeatCount="indefinite" begin="0.8s" path="M467,108 Q600,70 690,75"/></circle>
+                        <circle id="dpkt-br"  r="3.5" class="dfm2-pkt legit"><animateMotion dur="7s" repeatCount="indefinite" begin="3s" path="M467,108 Q340,240 235,315"/></circle>
+                        <circle id="dpkt-au"  r="3" class="dfm2-pkt legit"><animateMotion dur="9s" repeatCount="indefinite" begin="2.5s" path="M467,108 Q680,280 845,365"/></circle>
+                        <circle id="dpkt-uk"  r="3" class="dfm2-pkt legit"><animateMotion dur="3.5s" repeatCount="indefinite" begin="1.2s" path="M467,108 Q445,100 435,100"/></circle>
+                    </svg>
+
+                    <!-- Tooltip -->
+                    <div class="dfm2-tooltip" id="dfm2Tooltip">
+                        <div class="dfm2-tt-country" id="dfm2TtCountry"></div>
+                        <span class="dfm2-tt-risk" id="dfm2TtRisk"></span>
+                        <div class="dfm2-tt-desc" id="dfm2TtDesc"></div>
+                        <div class="dfm2-tt-consent" id="dfm2TtConsent"></div>
+                    </div>
+                </div>
+
+                <!-- Stats row -->
+                <div class="dfm2-stats">
+                    <div class="dfm2-stat">
+                        <div class="dfm2-stat-h">Data Destinations</div>
+                        <div class="dfm2-stat-n" id="dfm2c1">0</div>
+                        <div class="dfm2-stat-sub">Countries receiving data</div>
+                    </div>
+                    <div class="dfm2-stat">
+                        <div class="dfm2-stat-h">High Risk Flows</div>
+                        <div class="dfm2-stat-n red" id="dfm2c2">0</div>
+                        <div class="dfm2-stat-sub">Require immediate attention</div>
+                    </div>
+                    <div class="dfm2-stat">
+                        <div class="dfm2-stat-h">Consent Breakdown</div>
+                        <div class="dfm2-breakdown">
+                            <div><span class="dfm2-bd-dot" style="background:#ffd93d;box-shadow:0 0 6px #ffd93d"></span> Consent Required: 3</div>
+                            <div><span class="dfm2-bd-dot" style="background:#818cf8;box-shadow:0 0 6px #818cf8"></span> Legitimate Interest: 4</div>
+                            <div><span class="dfm2-bd-dot" style="background:#ff6b6b;box-shadow:0 0 6px #ff6b6b"></span> 3rd Party: 4</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <script>
+            (() => {
+                const DATA = {
+                    usa: { flag:'🇺🇸', name:'USA',       risk:'high',     consent:'Consent Required',    desc:'Data shared with 15+ ad networks. Largest advertising ecosystem globally.' },
+                    eu:  { flag:'🇪🇺', name:'EU',        risk:'medium',   consent:'Legitimate Interest',  desc:'GDPR zone — analytics & performance cookies. Relatively safer jurisdiction.' },
+                    uk:  { flag:'🇬🇧', name:'UK',        risk:'medium',   consent:'Legitimate Interest',  desc:'Post-Brexit UK GDPR. Marketing & analytics cookies shared.' },
+                    cn:  { flag:'🇨🇳', name:'China',     risk:'critical', consent:'Third-Party Sharing',  desc:'Critical risk — data may be transferred to state-affiliated parties under Chinese law.' },
+                    in:  { flag:'🇮🇳', name:'India',     risk:'high',     consent:'Third-Party Sharing',  desc:'Customer support & behavioural data. Limited enforcement of transfer restrictions.' },
+                    br:  { flag:'🇧🇷', name:'Brazil',    risk:'medium',   consent:'Legitimate Interest',  desc:'LGPD covers data use. Analytics shared under legitimate interest basis.' },
+                    au:  { flag:'🇦🇺', name:'Australia', risk:'low',      consent:'Legitimate Interest',  desc:'Performance cookies only. Strong privacy act in place.' },
+                    jp:  { flag:'🇯🇵', name:'Japan',     risk:'medium',   consent:'Consent Required',     desc:'Advertising & retargeting data. APPI compliance required.' },
+                    ru:  { flag:'🇷🇺', name:'Russia',    risk:'high',     consent:'Third-Party Sharing',  desc:'Data localisation laws. Third-party sharing raises compliance concerns.' },
+                };
+
+                function animateCount(id, target, dur) {
+                    const el = document.getElementById(id);
+                    if (!el) return;
+                    let start = null;
+                    function step(ts) {
+                        if (!start) start = ts;
+                        const p = Math.min((ts - start) / dur, 1);
+                        el.textContent = Math.round(p * target);
+                        if (p < 1) requestAnimationFrame(step);
+                    }
+                    requestAnimationFrame(step);
+                }
+
+                function initTooltips() {
+                    const wrap    = document.getElementById('dfm2MapWrap');
+                    const tooltip = document.getElementById('dfm2Tooltip');
+                    if (!wrap || !tooltip) return;
+
+                    document.querySelectorAll('.dfm2-dest-g').forEach(g => {
+                        const id   = g.dataset.id;
+                        const info = DATA[id];
+                        if (!info) return;
+
+                        g.addEventListener('mouseenter', (e) => {
+                            document.getElementById('dfm2TtCountry').textContent = info.flag + ' ' + info.name;
+                            const riskEl = document.getElementById('dfm2TtRisk');
+                            riskEl.textContent = info.risk.toUpperCase() + ' RISK';
+                            riskEl.className = 'dfm2-tt-risk ' + info.risk;
+                            document.getElementById('dfm2TtDesc').textContent = info.desc;
+                            document.getElementById('dfm2TtConsent').textContent = 'Consent type: ' + info.consent;
+                            tooltip.style.display = 'block';
+                        });
+
+                        g.addEventListener('mousemove', (e) => {
+                            const wr = wrap.getBoundingClientRect();
+                            let lx = e.clientX - wr.left + 14;
+                            let ly = e.clientY - wr.top  - 14;
+                            if (lx + 250 > wr.width)  lx -= 260;
+                            if (ly < 0) ly = 10;
+                            tooltip.style.left = lx + 'px';
+                            tooltip.style.top  = ly + 'px';
+                        });
+
+                        g.addEventListener('mouseleave', () => {
+                            tooltip.style.display = 'none';
+                        });
+                    });
+                }
+
+                function initSection() {
+                    initTooltips();
+                    // animate counters when section becomes visible
+                    const section = document.getElementById('heatmap');
+                    if (!section) return;
+                    const obs = new MutationObserver(() => {
+                        if (section.classList.contains('active-section')) {
+                            animateCount('dfm2c1', 9,  1200);
+                            animateCount('dfm2c2', 4,  1000);
+                        }
+                    });
+                    obs.observe(section, { attributes: true, attributeFilter: ['class'] });
+                    if (section.style.display !== 'none') {
+                        animateCount('dfm2c1', 9,  1200);
+                        animateCount('dfm2c2', 4,  1000);
+                    }
+                }
+
+                if (document.readyState === 'loading') {
+                    document.addEventListener('DOMContentLoaded', initSection);
+                } else {
+                    setTimeout(initSection, 80);
+                }
+            })();
+            </script>
+        </div>
+
+                <!-- Dangerous Clauses Section -->
+    </main>
+
+
+
+    <footer class="footer-modern">
+        <span>🍪 CookieWise • AI-Powered Privacy Guardian • Real-time Threat Detection</span>
+        <div style="margin-top: 1rem; display: flex; gap: 2rem; justify-content: center;">
+            <span>⚡ ACTIVE SHIELD</span>
+            <span>🔒 128-bit ENCRYPTION</span>
+            <span>🛡️ ZERO TRUST</span>
+        </div>
+    </footer>
+
+    <script>
+        // Generate floating particles
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDuration = (Math.random() * 10 + 10) + 's';
+                particle.style.animationDelay = Math.random() * 5 + 's';
+                particlesContainer.appendChild(particle);
+            }
+        }
+        
+        createParticles();
+
+// Navigation handled by HTML links
+
+        // Cycle through risk levels
+        let riskLevels = [25, 50, 75, 95];
+        let currentRiskIndex = 2;
+
+        function cycleRiskLevel() {
+            currentRiskIndex = (currentRiskIndex + 1) % riskLevels.length;
+            let percentage = riskLevels[currentRiskIndex];
+            
+            document.getElementById('riskScore').textContent = percentage + '%';
+            document.getElementById('gaugeFill').style.width = percentage + '%';
+            
+            // Change color based on risk
+            let color;
+            if (percentage <= 30) color = '#00ff00';
+            else if (percentage <= 60) color = '#ffff00';
+            else color = '#ff0000';
+            
+            document.getElementById('gaugeFill').style.background = `linear-gradient(90deg, ${color}, #f0f)`;
+        }
+
+        // Generate report with animation
+        function generateReport() {
+            const button = event.target;
+            button.textContent = '⚡ GENERATING REPORT... ⚡';
+            button.style.transform = 'scale(0.95)';
+            
+            setTimeout(() => {
+                button.textContent = '✅ REPORT GENERATED ✅';
+                button.style.transform = 'scale(1)';
+                
+                setTimeout(() => {
+                    button.textContent = '⚡ GENERATE THREAT REPORT ⚡';
+                }, 2000);
+            }, 1500);
+        }
+
+        // Add parallax effect to clauses
+        document.querySelectorAll('.clause-parallax-item').forEach((item, index) => {
+            item.addEventListener('mousemove', (e) => {
+                const rect = item.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                
+                const angleX = (y - centerY) / 20;
+                const angleY = (centerX - x) / 20;
+                
+                item.style.transform = `perspective(1000px) rotateX(${angleX}deg) rotateY(${angleY}deg) translateX(10px)`;
+            });
+            
+            item.addEventListener('mouseleave', () => {
+                item.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) translateX(10px)';
+            });
+        });
+    </script>
+</body>
+</html>
+</html>

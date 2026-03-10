@@ -28,23 +28,13 @@ const tabState = new Map(); // tabId → result payload
 
 /* ------------------------------------------------------------------ */
 /*  Apply badge to a specific tab                                       */
+/*  FIX: removed stray `payload` reference that was outside scope      */
 /* ------------------------------------------------------------------ */
 function applyBadge(tabId, found) {
   const cfg = found ? BADGE_FOUND : BADGE_CLEAR;
-
   chrome.action.setBadgeText({ tabId, text: cfg.text });
   chrome.action.setBadgeBackgroundColor({ tabId, color: cfg.color });
   chrome.action.setTitle({ tabId, title: cfg.title });
-  // Show notification popup if banner detected
-if (payload.found) {
-  chrome.notifications.create({
-    type: "basic",
-    iconUrl: "icons/icon128.png",
-    title: "CookieWise Alert",
-    message: "Cookie banner detected on this site. Click to view details.",
-    priority: 2
-  });
-}
 }
 
 /* ------------------------------------------------------------------ */
@@ -59,6 +49,17 @@ chrome.runtime.onMessage.addListener((message, sender) => {
   const payload = message.payload;
   tabState.set(tabId, payload);
   applyBadge(tabId, payload.found);
+
+  // Show notification only when banner is detected
+  if (payload.found) {
+    chrome.notifications.create(`cw_${tabId}_${Date.now()}`, {
+      type: "basic",
+      iconUrl: "icons/icon128.png",
+      title: "CookieWise Alert",
+      message: "Cookie banner detected on this site. Click to view details.",
+      priority: 2,
+    });
+  }
 
   // Persist latest result so popup can query it
   chrome.storage.session
@@ -76,7 +77,6 @@ chrome.tabs.onRemoved.addListener((tabId) => {
 
 chrome.tabs.onUpdated.addListener((tabId, changeInfo) => {
   if (changeInfo.status === "loading") {
-    // Reset badge on new navigation
     tabState.delete(tabId);
     chrome.storage.session.remove(`tab_${tabId}`).catch(() => {});
     applyBadge(tabId, false);
@@ -95,7 +95,6 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (state) {
     sendResponse(state);
   } else {
-    // Fall back to session storage
     chrome.storage.session
       .get(`tab_${tabId}`)
       .then((data) => sendResponse(data[`tab_${tabId}`] ?? null))
@@ -104,8 +103,12 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   }
 });
 
+/* ------------------------------------------------------------------ */
+/*  Open dashboard (risk-score page) when notification is clicked      */
+/*  FIX: updated path to dashboard/risk-score.html                     */
+/* ------------------------------------------------------------------ */
 chrome.notifications.onClicked.addListener(() => {
   chrome.tabs.create({
-    url: chrome.runtime.getURL("dashboard.html")
+    url: chrome.runtime.getURL("dashboard/risk-score.html"),
   });
 });

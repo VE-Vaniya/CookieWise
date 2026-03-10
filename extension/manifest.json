@@ -46,7 +46,9 @@
   "web_accessible_resources": [
     {
       "resources": [
-        "dashboard.html"
+        "dashboard/risk-score.html",
+        "dashboard/data-flow-map.html",
+        "dashboard/threat-scan.html"
       ],
       "matches": [
         "<all_urls>"

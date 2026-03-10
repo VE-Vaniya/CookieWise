@@ -102,7 +102,7 @@ function renderNoData() {
 }
 document.getElementById("openDashboard").addEventListener("click", () => {
   chrome.tabs.create({
-    url: chrome.runtime.getURL("dashboard.html")
+    url: chrome.runtime.getURL("dashboard/risk-score.html")
   });
 });
 

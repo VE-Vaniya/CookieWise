@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CookieWise - Privacy Guardian</title>
+    <title>CookieWise — Risk Score</title>
     <style>
         * {
             margin: 0;
@@ -660,58 +660,47 @@
                 text-align: center;
             }
         }
+    
+        /* Make anchor nav buttons look identical to buttons */
+        a.nav-btn-modern {
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
     </style>
-</head>
+
 <body>
-    <!-- Cyber Grid Background -->
     <div class="cyber-grid"></div>
-    
-    <!-- Floating Particles -->
     <div id="particles"></div>
-    
-    <!-- 3D Cube -->
     <div class="cube-bg">
-        <div class="front"></div>
-        <div class="back"></div>
-        <div class="right"></div>
-        <div class="left"></div>
-        <div class="top"></div>
-        <div class="bottom"></div>
+        <div class="front"></div><div class="back"></div>
+        <div class="right"></div><div class="left"></div>
+        <div class="top"></div><div class="bottom"></div>
     </div>
 
-    <!-- Navigation -->
     <nav class="glass-nav">
         <div class="logo">
             <span class="logo-icon">🍪</span>
             <span class="logo-text">CookieWise</span>
         </div>
-        
         <div class="nav-tabs-modern">
-            <button class="nav-btn-modern active" onclick="showTab('risk')">
-                <span>📊</span> Risk Core
-            </button>
-            <button class="nav-btn-modern" onclick="showTab('heatmap')">
-                <span>🔥</span> Heat Vision
-            </button>
-            <button class="nav-btn-modern" onclick="showTab('clauses')">
-                <span>⚠️</span> Threat Scan
-            </button>
+            <a href="risk-score.html" class="nav-btn-modern active"><span>📊</span> Risk Score</a>
+            <a href="data-flow-map.html" class="nav-btn-modern"><span>🌐</span> Data Flow Map</a>
+            <a href="threat-scan.html" class="nav-btn-modern"><span>⚠️</span> Threat Scan</a>
         </div>
-
         <div class="status-hologram">
             <span class="pulse-ring"></span>
             ACTIVE SCAN: example.com
         </div>
     </nav>
 
-    <!-- Main Content -->
     <main class="main-content">
-        <!-- Risk Overview Section -->
         <div id="risk" class="section active-section">
             <div class="risk-meter-3d">
                 <div class="risk-card-3d">
                     <div class="risk-header-modern">
-                        <span class="risk-title">⚠️ THREAT LEVEL</span>
+                        <span class="risk-title"> THREAT LEVEL</span>
                         <span class="risk-score" id="riskScore">75%</span>
                     </div>
                     
@@ -726,15 +715,15 @@
                     </div>
 
                     <div style="display: flex; justify-content: space-between; margin-top: 1rem; color: cyan;">
-                        <span>📡 47 Active Trackers</span>
-                        <span>🎯 15 Data Partners</span>
-                        <span>⚡ 85% Risk Score</span>
+                        <span> 47 Active Trackers</span>
+                        <span> 15 Data Partners</span>
+                        <span> 85% Risk Score</span>
                     </div>
                 </div>
             </div>
 
             <h2 style="color: cyan; margin: 2rem 0; text-align: center; text-transform: uppercase; letter-spacing: 4px;">
-                ⚡ RISK SECTORS ⚡
+                 RISK SECTORS 
             </h2>
 
             <!-- Interactive Flip Cards -->
@@ -750,7 +739,7 @@
                             <div style="color: cyan;">trackers</div>
                         </div>
                         <div class="flip-card-back">
-                            <h3 style="color: cyan; margin-bottom: 1rem;">🔍 DETECTED</h3>
+                            <h3 style="color: cyan; margin-bottom: 1rem;"> DETECTED</h3>
                             <ul style="list-style: none; color: #94a3b8;">
                                 <li style="margin: 0.5rem 0;">• Google Analytics</li>
                                 <li style="margin: 0.5rem 0;">• Facebook Pixel</li>
@@ -773,7 +762,7 @@
                             <div style="color: cyan;">partners</div>
                         </div>
                         <div class="flip-card-back">
-                            <h3 style="color: cyan; margin-bottom: 1rem;">📤 SHARED WITH</h3>
+                            <h3 style="color: cyan; margin-bottom: 1rem;"> SHARED WITH</h3>
                             <ul style="list-style: none; color: #94a3b8;">
                                 <li style="margin: 0.5rem 0;">• Advertising Networks</li>
                                 <li style="margin: 0.5rem 0;">• Data Brokers</li>
@@ -795,7 +784,7 @@
                             <div style="color: cyan;">data points</div>
                         </div>
                         <div class="flip-card-back">
-                            <h3 style="color: cyan; margin-bottom: 1rem;">📋 COLLECTING</h3>
+                            <h3 style="color: cyan; margin-bottom: 1rem;"> COLLECTING</h3>
                             <ul style="list-style: none; color: #94a3b8;">
                                 <li style="margin: 0.5rem 0;">• Browsing History</li>
                                 <li style="margin: 0.5rem 0;">• Location Data</li>
@@ -809,143 +798,13 @@
         </div>
 
         <!-- Heatmap Section -->
-        <div id="heatmap" class="section">
-            <h1 style="text-align: center; margin-bottom: 2rem; background: linear-gradient(135deg, cyan, #f0f); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
-                🔥 TRACKER HEAT VISION 🔥
-            </h1>
-
-            <div class="heatmap-3d">
-                <div class="heatmap-tower">
-                    <div class="tower-container">
-                        <div class="tower-block" style="height: 80px;"></div>
-                        <div class="tower-block" style="height: 60px;"></div>
-                        <div class="tower-block" style="height: 40px;"></div>
-                    </div>
-                    <div class="tower-label">HEADER</div>
-                    <div style="color: #f0f;">12 trackers</div>
-                </div>
-
-                <div class="heatmap-tower">
-                    <div class="tower-container">
-                        <div class="tower-block" style="height: 60px;"></div>
-                        <div class="tower-block" style="height: 90px;"></div>
-                        <div class="tower-block" style="height: 70px;"></div>
-                    </div>
-                    <div class="tower-label">MAIN</div>
-                    <div style="color: #f0f;">18 trackers</div>
-                </div>
-
-                <div class="heatmap-tower">
-                    <div class="tower-container">
-                        <div class="tower-block" style="height: 70px;"></div>
-                        <div class="tower-block" style="height: 50px;"></div>
-                        <div class="tower-block" style="height: 30px;"></div>
-                    </div>
-                    <div class="tower-label">SIDEBAR</div>
-                    <div style="color: #f0f;">9 trackers</div>
-                </div>
-
-                <div class="heatmap-tower">
-                    <div class="tower-container">
-                        <div class="tower-block" style="height: 40px;"></div>
-                        <div class="tower-block" style="height: 30px;"></div>
-                        <div class="tower-block" style="height: 20px;"></div>
-                    </div>
-                    <div class="tower-label">FOOTER</div>
-                    <div style="color: #f0f;">5 trackers</div>
-                </div>
-            </div>
-
-            <!-- Interactive Distribution -->
-            <div style="margin-top: 3rem; background: rgba(20, 30, 50, 0.7); backdrop-filter: blur(10px); border-radius: 30px; padding: 2rem; border: 1px solid cyan;">
-                <h3 style="color: cyan; text-align: center; margin-bottom: 2rem;">📊 TRACKER DISTRIBUTION</h3>
-                <div class="gauge-container" style="height: 20px;">
-                    <div class="gauge-fill" style="width: 45%; background: linear-gradient(90deg, #ff6b6b, #f0f);"></div>
-                </div>
-                <div style="display: flex; justify-content: space-between; margin: 1rem 0; color: #94a3b8;">
-                    <span>Marketing 45%</span>
-                    <span>Analytics 30%</span>
-                    <span>Functional 25%</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- Dangerous Clauses Section -->
-        <div id="clauses" class="section">
-            <h1 style="text-align: center; margin-bottom: 2rem; background: linear-gradient(135deg, #ff6b6b, #f0f); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
-                ⚠️ CRITICAL THREAT DETECTION ⚠️
-            </h1>
-
-            <div class="clauses-parallax">
-                <div class="clause-parallax-item">
-                    <div class="clause-icon-3d">🔴</div>
-                    <div style="flex: 1;">
-                        <h3 style="color: #ff6b6b;">Third Party Data Sharing</h3>
-                        <p style="color: #94a3b8;">Your data may be sold to advertising networks without explicit consent</p>
-                    </div>
-                    <div class="severity-meter" style="--percent: 95">
-                        <svg class="severity-svg" viewBox="0 0 100 100">
-                            <circle class="severity-circle-bg" cx="50" cy="50" r="45"></circle>
-                            <circle class="severity-circle-fill critical" cx="50" cy="50" r="45" style="stroke-dashoffset: 14.15;"></circle>
-                        </svg>
-                    </div>
-                </div>
-
-                <div class="clause-parallax-item">
-                    <div class="clause-icon-3d">⚠️</div>
-                    <div style="flex: 1;">
-                        <h3 style="color: #ff6b00;">Indefinite Cookie Retention</h3>
-                        <p style="color: #94a3b8;">Cookies persist for 5+ years creating permanent tracking profiles</p>
-                    </div>
-                    <div class="severity-meter" style="--percent: 85">
-                        <svg class="severity-svg" viewBox="0 0 100 100">
-                            <circle class="severity-circle-bg" cx="50" cy="50" r="45"></circle>
-                            <circle class="severity-circle-fill high" cx="50" cy="50" r="45" style="stroke-dashoffset: 42.45;"></circle>
-                        </svg>
-                    </div>
-                </div>
-
-                <div class="clause-parallax-item">
-                    <div class="clause-icon-3d">🌍</div>
-                    <div style="flex: 1;">
-                        <h3 style="color: #ff6b00;">International Data Transfer</h3>
-                        <p style="color: #94a3b8;">Data transferred to countries with weaker privacy laws</p>
-                    </div>
-                    <div class="severity-meter" style="--percent: 80">
-                        <svg class="severity-svg" viewBox="0 0 100 100">
-                            <circle class="severity-circle-bg" cx="50" cy="50" r="45"></circle>
-                            <circle class="severity-circle-fill high" cx="50" cy="50" r="45" style="stroke-dashoffset: 56.6;"></circle>
-                        </svg>
-                    </div>
-                </div>
-
-                <div class="clause-parallax-item">
-                    <div class="clause-icon-3d">📱</div>
-                    <div style="flex: 1;">
-                        <h3 style="color: #ffd93d;">Cross-Device Tracking</h3>
-                        <p style="color: #94a3b8;">Activity tracked across all devices to build comprehensive profile</p>
-                    </div>
-                    <div class="severity-meter" style="--percent: 65">
-                        <svg class="severity-svg" viewBox="0 0 100 100">
-                            <circle class="severity-circle-bg" cx="50" cy="50" r="45"></circle>
-                            <circle class="severity-circle-fill medium" cx="50" cy="50" r="45" style="stroke-dashoffset: 99.05;"></circle>
-                        </svg>
-                    </div>
-                </div>
-            </div>
-
-            <button class="action-button" onclick="generateReport()">
-                ⚡ GENERATE THREAT REPORT ⚡
-            </button>
-        </div>
     </main>
+
+
 
     <footer class="footer-modern">
         <span>🍪 CookieWise • AI-Powered Privacy Guardian • Real-time Threat Detection</span>
         <div style="margin-top: 1rem; display: flex; gap: 2rem; justify-content: center;">
-            <span>⚡ ACTIVE SHIELD</span>
-            <span>🔒 128-bit ENCRYPTION</span>
-            <span>🛡️ ZERO TRUST</span>
         </div>
     </footer>
 
@@ -965,18 +824,7 @@
         
         createParticles();
 
-        // Tab switching
-        function showTab(tabId) {
-            document.querySelectorAll('.section').forEach(section => {
-                section.classList.remove('active-section');
-            });
-            document.getElementById(tabId).classList.add('active-section');
-            
-            document.querySelectorAll('.nav-btn-modern').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            event.target.closest('.nav-btn-modern').classList.add('active');
-        }
+// Navigation handled by HTML links
 
         // Cycle through risk levels
         let riskLevels = [25, 50, 75, 95];
@@ -1036,4 +884,5 @@
         });
     </script>
 </body>
+</html>
 </html>
