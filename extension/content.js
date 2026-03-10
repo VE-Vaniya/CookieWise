@@ -11,6 +11,8 @@
 (() => {
   "use strict";
 
+  console.log("%c[CookieWise] Extension ACTIVE on: " + location.hostname, "background: #1e1e1e; color: #00ff00; padding: 5px; border-radius: 4px;");
+
   /* ------------------------------------------------------------------ */
   /*  VENDOR SELECTORS — Covers 40+ real-world CMPs / banner patterns    */
   /* ------------------------------------------------------------------ */
@@ -85,6 +87,10 @@
     "[aria-label*='consent' i]",
     "[role='dialog'][aria-label*='cookie' i]",
     "[role='alertdialog'][aria-label*='cookie' i]",
+    "div[class*='consent' i]",
+    "div[id*='consent' i]",
+    "div[class*='cookie-notice' i]",
+    "section[class*='cookie' i]",
   ];
 
   /* ------------------------------------------------------------------ */
@@ -103,6 +109,14 @@
     /\bgdpr\b/i,
     /\blegitimate\s+interest/i,
     /\bconsent\s+management\b/i,
+  ];
+
+  const POLICY_KEYWORDS = [
+    /\bcookie\s+policy\b/i,
+    /\bprivacy\s+policy\b/i,
+    /\bprivacy\s+&\s+cookies?\b/i,
+    /\bterms\s+(of\s+)?service\b/i,
+    /\blegal\s+notice\b/i,
   ];
 
   /* ------------------------------------------------------------------ */
@@ -129,6 +143,7 @@
         if (el && isVisible(el)) {
           return {
             found: true,
+            element: el, // Return the element to search within it
             method: "vendor_selector",
             matchedSelector: selector,
             snippetText: (el.innerText || "").slice(0, 120).trim(),
@@ -199,6 +214,97 @@
     }
 
     return { found: false };
+  }
+
+  /**
+   * Helper to find all elements matching a selector, even deep inside Shadow DOMs.
+   */
+  function querySelectorAllShadow(selector, root = document) {
+    const elements = Array.from(root.querySelectorAll(selector));
+    const children = root.querySelectorAll("*");
+    for (const child of children) {
+      if (child.shadowRoot) {
+        elements.push(...querySelectorAllShadow(selector, child.shadowRoot));
+      }
+    }
+    return elements;
+  }
+
+  /* ------------------------------------------------------------------ */
+  /*  ROBUST LEGAL LINK DISCOVERY (Scoring Algorithm)                  */
+  /* ------------------------------------------------------------------ */
+  function findLegalLinks(container = document) {
+    // 1. Collect all links from the container, including deep Shadow DOM
+    const links = querySelectorAllShadow("a", container);
+    
+    // Find potential "Accept" buttons for proximity boost
+    const acceptButtons = querySelectorAllShadow("button, [role='button']").filter(b => {
+      const text = (b.innerText || "").toLowerCase();
+      return text.includes("accept") || text.includes("agree") || text.includes("allow");
+    });
+
+    const candidates = [];
+    const BAD_PATTERNS = ["settings", "preferences", "manage-cookies", "consent", "news", "latest", "blog", "category", "articles", "generator", "tool", "pricing", "affiliate", "demo", "product", "guide"];
+
+    for (const link of links) {
+      const text = (link.innerText || "").toLowerCase().trim();
+      const href = (link.href || "").toLowerCase();
+      
+      if (!href || href.startsWith("javascript:") || href.startsWith("#") || href === location.origin + "/" || href === location.href) continue;
+
+      let score = 0;
+      let type = "unknown";
+
+      // --- PRIVACY SIGNALS ---
+      if (text === "privacy" || text === "privacy statement") { score += 20; type = "privacy"; }
+      else if (text.includes("privacy policy") || text.includes("privacy notice")) { score += 18; type = "privacy"; }
+      
+      // --- TERMS SIGNALS ---
+      if (text === "terms" || text === "terms & conditions" || text === "terms of use") { score += 20; type = "terms"; }
+      else if (text.includes("terms of service") || text.includes("legal terms")) { score += 18; type = "terms"; }
+
+      // --- URL HEURISTICS ---
+      if (href.includes("privacy-statement") || href.includes("privacy-policy")) { score += 15; if (type === "unknown") type = "privacy"; }
+      if (href.includes("terms-of-use") || href.includes("terms-and-conditions")) { score += 15; if (type === "unknown") type = "terms"; }
+      
+      // --- PROXIMITY BOOST (Gemini Recommendation) ---
+      try {
+        const linkRect = link.getBoundingClientRect();
+        for (const button of acceptButtons) {
+          const btnRect = button.getBoundingClientRect();
+          const dist = Math.sqrt(Math.pow(linkRect.left - btnRect.left, 2) + Math.pow(linkRect.top - btnRect.top, 2));
+          if (dist < 100) { // Within 100px proximity
+            score += 20;
+            break;
+          }
+        }
+      } catch (e) {}
+
+      // --- FILTERS ---
+      if (BAD_PATTERNS.some(p => text.includes(p) || (href.includes(p) && !href.includes("privacy") && !href.includes("terms")))) {
+        score -= 40;
+      }
+      if (href.includes("?") || href.includes("&ref=")) score -= 10;
+      if (link.closest && link.closest("footer")) score += 5;
+      if (container !== document) score += 10;
+
+      if (score > 10) {
+        candidates.push({ url: link.href, score, type });
+      }
+    }
+
+    // Pick top link for each type
+    const best = {};
+    candidates.sort((a, b) => b.score - a.score);
+    for (const cand of candidates) {
+      if (!best[cand.type]) best[cand.type] = cand.url;
+    }
+
+    // Fallback to whole document if banner search failed
+    if (Object.keys(best).length === 0 && container !== document) {
+      return findLegalLinks(document);
+    }
+    return best;
   }
 
   /* ------------------------------------------------------------------ */
@@ -277,20 +383,94 @@
   }
 
   /* ------------------------------------------------------------------ */
-  /*  RUN + REPORT                                                        */
+  /*  MESSAGE LISTENER (for robust policy extraction)                   */
   /* ------------------------------------------------------------------ */
-  function hideAlert() {
-    const alert = document.getElementById("cookiewise-status-alert");
-    if (alert) {
-      alert.classList.remove("cw-visible");
-      setTimeout(() => alert.remove(), 500);
-    }
-  }
+  let processedThisSession = false;
 
-  /* ------------------------------------------------------------------ */
-  /*  RUN + REPORT                                                        */
-  /* ------------------------------------------------------------------ */
+  chrome.runtime.onMessage.addListener((message) => {
+    if (message.type === "CLEAN_AND_LOG_POLICY") {
+      const { domain, url, html, docType = "Policy" } = message.payload;
+      
+      try {
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(html, "text/html");
+
+        let cleanText = "";
+
+        // STRATEGY 0: Next.js or JSON Data mining
+        const dataScripts = doc.querySelectorAll("script[type='application/json'], script#__NEXT_DATA__");
+        for (const script of dataScripts) {
+          try {
+            const json = JSON.parse(script.textContent);
+            const findDeepText = (obj) => {
+              let texts = [];
+              const walk = (o) => {
+                if (typeof o === "string" && o.length > 300 && o.split(" ").length > 50) {
+                  texts.push(o);
+                } else if (typeof o === "object" && o !== null) {
+                  Object.values(o).forEach(walk);
+                }
+              };
+              walk(obj);
+              return texts;
+            };
+            const extracted = findDeepText(json);
+            if (extracted.length > 0) {
+              cleanText = extracted.join("\n\n");
+              break;
+            }
+          } catch (e) {}
+        }
+
+        // STRATEGY 1: DOM Scraping with Rule-Based Targeting
+        if (!cleanText || cleanText.length < 500) {
+          // Rule 1: Delete Noise
+          const noise = ["script", "style", "nav", "svg", "header", "footer", "iframe", "noscript", "aside", "form", "button"];
+          noise.forEach(s => doc.querySelectorAll(s).forEach(el => el.remove()));
+
+          // Rule 2: Hunt for the "Heaviest" text block
+          const potentialContainers = doc.querySelectorAll("article, main, section, [class*='content'], [id*='content'], [class*='legal'], [class*='policy']");
+          let bestNode = null;
+          let maxWords = 0;
+
+          potentialContainers.forEach(node => {
+            const wordCount = (node.innerText || "").split(/\s+/).length;
+            if (wordCount > maxWords) {
+              maxWords = wordCount;
+              bestNode = node;
+            }
+          });
+
+          const root = bestNode || doc.body;
+          cleanText = root.innerText;
+        }
+
+        // Rule 3: Final cleanup and HTML stripping (even for JSON strings)
+        cleanText = cleanText
+          .replace(/<[^>]+>/g, '')             // Final aggressive HTML tag removal
+          .replace(/[ \t]+/g, ' ')             // Normalize spaces
+          .replace(/\n\s*\n/g, '\n\n')        // Normalize paragraphs
+          .replace(/(\n){3,}/g, '\n\n')       // Max 2 newlines
+          .trim();
+
+        if (cleanText.length > 500) {
+          console.log(`%c[CookieWise] Full ${docType.toUpperCase()} Extracted for ${domain}`, "color: #4CAF50; font-weight: bold; font-size: 14px;");
+          console.log(`Source URL: ${url}`);
+          console.log(cleanText.slice(0, 10000) + (cleanText.length > 10000 ? "\n...[Truncated]..." : ""));
+          console.log(`%c[CookieWise] --- End of ${docType.toUpperCase()} ---`, "color: #4CAF50; font-weight: bold;");
+        } else {
+          console.log(`[CookieWise] Document at ${url} appears to be empty or protected.`);
+        }
+
+      } catch (e) {
+        console.error("[CookieWise] DOM Extraction Error:", e);
+      }
+    }
+  });
+
+  // Run immediately (document_idle — DOM is ready)
   function run() {
+    console.log("[CookieWise] Checking for banners/policies...");
     let result;
     try {
       result = detectBanner();
@@ -299,34 +479,45 @@
       result = { found: false, error: true };
     }
 
-    // Store result in sessionStorage so popup can read it synchronously
-    try {
-      sessionStorage.setItem("cookiewise_result", JSON.stringify(result));
-    } catch (_) { }
+    // Store result so popup can read it
+    try { sessionStorage.setItem("cookiewise_result", JSON.stringify(result)); } catch (_) { }
 
-    // Notify background script to update the toolbar badge
+    // Update badge
     chrome.runtime.sendMessage({
       type: "COOKIE_BANNER_RESULT",
-      payload: {
-        ...result,
-        url: location.href,
-        timestamp: Date.now(),
-      },
+      payload: { ...result, url: location.href, timestamp: Date.now() },
     });
 
     if (result.found) {
-      // If we found a banner (either now or via late observer), hide the failure alert
-      hideAlert();
+      console.warn("[CookieWise] Banner MATCHED:", result.method);
+      // Inline hideAlert logic
+      const alert = document.getElementById("cookiewise-status-alert");
+      if (alert) {
+        alert.classList.remove("cw-visible");
+        setTimeout(() => alert.remove(), 500);
+      }
     } else {
-      // Show failure alert only if it hasn't been shown yet or it's a critical error
-      const msg = result.error
-        ? "CookieWise: Detection engine encountered an error on this site."
-        : "CookieWise: Unable to detect cookie banner or out of scope.";
-      showAlert(msg);
+      showAlert(result.error ? "Error on site." : "Unable to detect banner.");
+    }
+
+    // --- POLICY EXTRACTION (Once per sessions) ---
+    if (!processedThisSession) {
+      const legalLinks = findLegalLinks(result.element || document); 
+      const foundAny = Object.keys(legalLinks).length > 0;
+
+      if (foundAny) {
+        processedThisSession = true; 
+        for (const [type, url] of Object.entries(legalLinks)) {
+          console.log(`[CookieWise] Extracting ${type} document:`, url);
+          chrome.runtime.sendMessage({
+            type: "PROCESS_POLICY",
+            payload: { url, domain: location.hostname, docType: type }
+          });
+        }
+      }
     }
   }
 
-  // Run immediately (document_idle — DOM is ready)
   run();
 
   // Also observe late-injected banners (SPAs, lazy-loaded CMPs)

@@ -25,6 +25,8 @@ const BADGE_CLEAR = {
 /*  Per-tab state store                                                 */
 /* ------------------------------------------------------------------ */
 const tabState = new Map(); // tabId → result payload
+const PROCESSED_DOMAINS_KEY = "cw_processed_domains";
+const currentlyProcessing = new Set(); // domains currently being fetched
 
 /* ------------------------------------------------------------------ */
 /*  Apply badge to a specific tab                                       */
@@ -111,4 +113,38 @@ chrome.notifications.onClicked.addListener(() => {
   chrome.tabs.create({
     url: chrome.runtime.getURL("dashboard/risk-score.html"),
   });
+});
+
+/* ------------------------------------------------------------------ */
+/*  POLICY EXTRACTION HANDLER                                           */
+/* ------------------------------------------------------------------ */
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if (message.type === "PROCESS_POLICY") {
+    const { url, domain, docType = "Policy" } = message.payload;
+    
+    // Per-URL lock to prevent redundant fetches in the same session
+    if (!url || currentlyProcessing.has(url)) return;
+
+    currentlyProcessing.add(url);
+    console.warn(`[CookieWise] Extracting ${docType} from: ${url}`);
+    
+    fetch(url)
+      .then(res => res.text())
+      .then(html => {
+        // Send raw HTML to content script for advanced DOM cleaning
+        if (sender.tab && sender.tab.id) {
+          chrome.tabs.sendMessage(sender.tab.id, {
+            type: "CLEAN_AND_LOG_POLICY",
+            payload: { domain, url, html, docType }
+          }).catch(() => {});
+        }
+
+        // Release lock
+        setTimeout(() => currentlyProcessing.delete(url), 5000);
+      })
+      .catch(err => {
+        console.error(`[CookieWise] Failed extraction from ${url}:`, err);
+        currentlyProcessing.delete(url);
+      });
+  }
 });
