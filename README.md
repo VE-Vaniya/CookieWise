@@ -23,20 +23,19 @@ A Chrome extension that **automatically detects cookie consent banners** on ever
 
 ```
 CookieWise/
-├── extension/                 # Chrome extension source (load unpacked)
-│   ├── manifest.json          # MV3 manifest
-│   ├── content.js             # Detection logic (runs on every page)
-│   ├── background.js          # Service worker — badge management
-│   ├── popup.html             # Toolbar popup UI
-│   ├── popup.js               # Popup logic — queries background for state
-│   └── icons/
-│       ├── icon16.png
-│       ├── icon48.png
-│       └── icon128.png
-└── selenium_tests/            # Python Selenium test suite
-    ├── requirements.txt
-    ├── conftest.py
-    └── test_cookiewise.py
+├── manifest.json # Extension configuration
+├── background.js # Service worker for badge and storage
+├── content.js # Banner detection and text extraction
+├── js/
+│ ├── config.js # API keys and configuration (gitignored)
+│ ├── summarizer.js # Groq API communication
+│ └── dashboard-updater.js # Dashboard UI updates
+├── dashboard/
+│ ├── risk-score.html # Main dashboard
+│ ├── data-flow-map.html # (Placeholder)
+│ └── threat-scan.html # (Placeholder)
+├── icons/ # Extension icons
+└── README.md # This file
 ```
 
 ---

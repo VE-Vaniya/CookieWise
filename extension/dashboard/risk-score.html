@@ -5,6 +5,7 @@
     <script src="../js/config.js"></script>
     <script src="../js/summarizer.js"></script>
     <script src="../js/dashboard-updater.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="Content-Security-Policy"
@@ -759,6 +760,46 @@
             align-items: center;
             gap: 8px;
         }
+
+        /* Icon styling */
+        .icon-3d i {
+            font-size: 3rem;
+            transition: all 0.3s ease;
+        }
+
+        .icon-3d i:hover {
+            transform: scale(1.1);
+            filter: drop-shadow(0 0 20px cyan);
+        }
+
+        /* Status icons */
+        .fa-check-circle {
+            filter: drop-shadow(0 0 5px #00ff00);
+        }
+
+        .fa-exclamation-triangle {
+            filter: drop-shadow(0 0 5px #ffff00);
+        }
+
+        .fa-skull-crossbones {
+            filter: drop-shadow(0 0 5px #ff0000);
+        }
+
+        /* List item icons */
+        .fa-angle-right {
+            color: cyan;
+        }
+
+        /* Card front icons */
+        .flip-card-front i {
+            margin-right: 8px;
+        }
+
+        /* Footer icons */
+        .fa-cookie-bite {
+            color: cyan;
+            animation: bounce 2s infinite;
+        }
     </style>
 
 <body>
@@ -779,9 +820,9 @@
             <span class="logo-text">CookieWise</span>
         </div>
         <div class="nav-tabs-modern">
-            <a href="risk-score.html" class="nav-btn-modern active"><span>📊</span> Risk Score</a>
-            <a href="data-flow-map.html" class="nav-btn-modern"><span>🌐</span> Data Flow Map</a>
-            <a href="threat-scan.html" class="nav-btn-modern"><span>⚠️</span> Threat Scan</a>
+            <a href="risk-score.html" class="nav-btn-modern active"><i class="fas fa-chart-pie"></i> Risk Score</a>
+            <a href="data-flow-map.html" class="nav-btn-modern"><i class="fas fa-map-marked-alt"></i> Data Flow Map</a>
+            <a href="threat-scan.html" class="nav-btn-modern"><i class="fas fa-shield-alt"></i> Threat Scan</a>
         </div>
         <div class="status-hologram" id="statusHologram">
             <span class="pulse-ring"></span>
@@ -803,9 +844,11 @@
                         <div class="gauge-fill" id="gaugeFill" style="width: 75%"></div>
                     </div>
                     <div class="gauge-markers">
-                        <span>🟢 SAFE</span>
-                        <span>🟡 WARNING</span>
-                        <span>🔴 CRITICAL</span>
+                        <span><i class="fas fa-check-circle" style="color: #00ff00; margin-right: 4px;"></i> SAFE</span>
+                        <span><i class="fas fa-exclamation-triangle" style="color: #ffff00; margin-right: 4px;"></i>
+                            WARNING</span>
+                        <span><i class="fas fa-skull-crossbones" style="color: #ff0000; margin-right: 4px;"></i>
+                            CRITICAL</span>
                     </div>
 
                     <div style="display: flex; justify-content: space-between; margin-top: 1rem; color: cyan;">
@@ -827,7 +870,7 @@
                 <div class="flip-card">
                     <div class="flip-card-inner">
                         <div class="flip-card-front">
-                            <div class="icon-3d">📍</div>
+                            <div class="icon-3d"> <i class="fas fa-location-dot"></i></div>
                             <h3>TRACKING TECHNOLOGIES</h3>
                             <div class="risk-badge-interactive high">HIGH THREAT</div>
                             <div style="font-size: 2rem;" id="dataPointsCount">23</div>
@@ -850,7 +893,7 @@
                 <div class="flip-card">
                     <div class="flip-card-inner">
                         <div class="flip-card-front">
-                            <div class="icon-3d">🔄</div>
+                            <div class="icon-3d"><i class="fas fa-share-nodes"></i></div>
                             <h3>DATA SHARING</h3>
                             <div class="risk-badge-interactive high">HIGH THREAT</div>
                             <div style="font-size: 2rem;" id="partnersCount">15</div>
@@ -872,7 +915,7 @@
                 <div class="flip-card">
                     <div class="flip-card-inner">
                         <div class="flip-card-front">
-                            <div class="icon-3d">📊</div>
+                            <div class="icon-3d"> <i class="fas fa-database"></i></div>
                             <h3>DATA COLLECTION</h3>
                             <div class="risk-badge-interactive medium">MEDIUM THREAT</div>
                             <div style="font-size: 2rem;">12</div>
@@ -898,7 +941,8 @@
 
 
     <footer class="footer-modern">
-        <span>🍪 CookieWise • AI-Powered Privacy Guardian • Real-time Threat Detection</span>
+        <span><i class="fas fa-cookie-bite" style="margin-right: 8px;"></i> CookieWise • AI-Powered Privacy Guardian •
+            Real-time Threat Detection</span>
         <div style="margin-top: 1rem; display: flex; gap: 2rem; justify-content: center;">
         </div>
     </footer>
