@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="../js/dashboard-updater.js"></script>
+
     <title>CookieWise — Threat Scan</title>
     <style>
         * {
@@ -691,7 +693,7 @@
         </div>
         <div class="status-hologram">
             <span class="pulse-ring"></span>
-            ACTIVE SCAN: example.com
+            <span id="scanStatus">ACTIVE SCAN: <span id="currentSite"> </span></span>
         </div>
     </nav>
 

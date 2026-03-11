@@ -94,7 +94,9 @@ function updateTrackingCard(summary) {
         }
     }
     const countEl = document.getElementById('dataPointsCount');
+    const count2= document.getElementById('activeTrackersCount'); // Also update the bottom stat
     if (countEl) countEl.textContent = items.length;
+    if (count2) count2.textContent = items.length + ' Active Trackers';
 }
 
 // /** Card 1 — DATA SHARING */
@@ -136,7 +138,9 @@ function updateSharingCard(summary) {
         }
     }
     const countEl = document.getElementById('partnersCount');
-    if (countEl) countEl.textContent = items.length + '+';
+    const count2 = document.getElementById('dataPartnersCount'); // Also update the bottom stat
+    if (countEl) countEl.textContent = items.length ;
+    if (count2) count2.textContent = items.length+' Data Partners';
 }
 /** Card 2 — DATA COLLECTION */
 // function updateCollectionCard(summary) {
@@ -197,6 +201,22 @@ async function getExtractedTexts() {
     return { extractedPrivacy: null, extractedTerms: null };
 }
 
+// function updateOverallRisk(scores) {
+//     const vals = Object.values(scores).filter(v => v !== undefined && v !== null);
+//     const avg = vals.length ? Math.round(vals.reduce((a, b) => a + b, 0) / vals.length) : 50;
+
+//     const riskEl = document.getElementById('riskScore');
+//     const gaugeEl = document.getElementById('gaugeFill');
+//     if (riskEl) riskEl.textContent = avg + '%';
+//     if (gaugeEl) {
+//         gaugeEl.style.width = avg + '%';
+//         const color = avg <= 30 ? '#00ff00' : avg <= 60 ? '#ffff00' : '#ff0000';
+//         gaugeEl.style.background = `linear-gradient(90deg, ${color}, #f0f)`;
+//     }
+//     const loader = document.getElementById('loading-indicator');
+//     if (loader) loader.remove();
+//     console.log(`🎯 Overall risk score: ${avg}%`);
+// }
 function updateOverallRisk(scores) {
     const vals = Object.values(scores).filter(v => v !== undefined && v !== null);
     const avg = vals.length ? Math.round(vals.reduce((a, b) => a + b, 0) / vals.length) : 50;
@@ -209,6 +229,13 @@ function updateOverallRisk(scores) {
         const color = avg <= 30 ? '#00ff00' : avg <= 60 ? '#ffff00' : '#ff0000';
         gaugeEl.style.background = `linear-gradient(90deg, ${color}, #f0f)`;
     }
+    
+    // ✅ Also update the bottom risk score
+    const bottomRiskEl = document.getElementById('calculatedRiskScore');
+    if (bottomRiskEl) {
+        bottomRiskEl.textContent = `${avg}% Risk Score`;
+    }
+    
     const loader = document.getElementById('loading-indicator');
     if (loader) loader.remove();
     console.log(`🎯 Overall risk score: ${avg}%`);
@@ -249,13 +276,41 @@ function showLoadingState() {
     }
 }
 
+// function showNoDataState() {
+//     const riskScore = document.getElementById('riskScore');
+//     if (riskScore) riskScore.textContent = 'N/A';
+//     const gaugeFill = document.getElementById('gaugeFill');
+//     if (gaugeFill) gaugeFill.style.width = '0%';
+//     const loader = document.getElementById('loading-indicator');
+//     if (loader) loader.remove();
+//     const container = document.querySelector('.category-grid-interactive');
+//     if (container && !document.querySelector('.no-data-message')) {
+//         const div = document.createElement('div');
+//         div.className = 'no-data-message';
+//         div.style.cssText = 'grid-column:1/-1;text-align:center;padding:50px;background:rgba(0,255,255,0.1);border-radius:20px;border:1px solid cyan;';
+//         div.innerHTML = '<h3 style="color:cyan;">🔍 No Policy Detected</h3><p style="color:#94a3b8;margin-top:10px;">Visit a website with a cookie banner to see analysis.</p>';
+//         container.prepend(div);
+//     }
+// }
 function showNoDataState() {
     const riskScore = document.getElementById('riskScore');
     if (riskScore) riskScore.textContent = 'N/A';
     const gaugeFill = document.getElementById('gaugeFill');
     if (gaugeFill) gaugeFill.style.width = '0%';
+    
+    // Reset bottom stats
+    const trackersEl = document.getElementById('activeTrackersCount');
+    if (trackersEl) trackersEl.textContent = '0 Active Trackers';
+    
+    const partnersEl = document.getElementById('dataPartnersCount');
+    if (partnersEl) partnersEl.textContent = '0 Data Partners';
+    
+    const riskBottomEl = document.getElementById('calculatedRiskScore');
+    if (riskBottomEl) riskBottomEl.textContent = '0% Risk Score';
+    
     const loader = document.getElementById('loading-indicator');
     if (loader) loader.remove();
+    
     const container = document.querySelector('.category-grid-interactive');
     if (container && !document.querySelector('.no-data-message')) {
         const div = document.createElement('div');
@@ -265,7 +320,6 @@ function showNoDataState() {
         container.prepend(div);
     }
 }
-
 function showErrorState(error) {
     const loader = document.getElementById('loading-indicator');
     if (loader) loader.remove();
@@ -319,7 +373,163 @@ function initParallax() {
     });
 }
 
+
+/**
+ * Get the real website tab (not the dashboard)
+ */
+async function getWebsiteTab() {
+    try {
+        // Get all tabs
+        const tabs = await chrome.tabs.query({});
+        
+        // Filter out the dashboard tab and find the most recent non-extension tab
+        const extensionUrl = chrome.runtime.getURL('');
+        
+        // Sort by last accessed (most recent first) and find first non-extension tab
+        const websiteTab = tabs
+            .filter(tab => !tab.url?.startsWith(extensionUrl) && tab.url?.startsWith('http'))
+            .sort((a, b) => (b.lastAccessed || 0) - (a.lastAccessed || 0))[0];
+        
+        return websiteTab;
+    } catch (error) {
+        console.error('Error getting website tab:', error);
+        return null;
+    }
+}
+
+/**
+ * Update the site name in the navigation bar
+ */
+async function updateSiteName() {
+    try {
+        // Show loading state
+        const siteElement = document.getElementById('currentSite');
+        const statusDiv = document.getElementById('scanStatus');
+        
+        if (!siteElement) return;
+        
+        siteElement.textContent = 'loading...';
+        
+        // Get the real website tab
+        const websiteTab = await getWebsiteTab();
+        
+        if (websiteTab && websiteTab.url) {
+            // Extract domain name from URL
+            const url = new URL(websiteTab.url);
+            let hostname = url.hostname;
+            
+            // Remove 'www.' prefix if present
+            hostname = hostname.replace(/^www\./, '');
+            
+            // Update the site name
+            siteElement.textContent = hostname;
+            
+            // Check if we have data for this site
+            chrome.storage.local.get(['extractedPrivacy', 'extractedTerms'], (result) => {
+                if (result.extractedPrivacy || result.extractedTerms) {
+                    if (statusDiv) {
+                        statusDiv.innerHTML = `ACTIVE SCAN: <span id="currentSite" style="color: #00ff00;">${hostname}</span>`;
+                    }
+                } else {
+                    if (statusDiv) {
+                        statusDiv.innerHTML = `ACTIVE SCAN: <span id="currentSite">${hostname}</span>`;
+                    }
+                }
+            });
+        } else {
+            // Fallback if no website tab found
+            siteElement.textContent = 'no website';
+            if (statusDiv) {
+                statusDiv.innerHTML = `ACTIVE SCAN: <span id="currentSite">no website</span>`;
+            }
+        }
+    } catch (error) {
+        console.error('Error getting site name:', error);
+        const siteElement = document.getElementById('currentSite');
+        if (siteElement) {
+            siteElement.textContent = 'unknown';
+        }
+    }
+}
+
+// // Add this new function to update the bottom stats
+// function updateBottomStats(privacySummary, termsSummary) {
+//     // Update Active Trackers (from privacy.thirdParties or fallback)
+//     const trackersEl = document.getElementById('activeTrackersCount');
+//     if (trackersEl) {
+//         let trackerCount = 0;
+//         if (privacySummary?.thirdParties && privacySummary.thirdParties.length > 0) {
+//             trackerCount = privacySummary.thirdParties.length;
+//         } else {
+//             trackerCount = Math.floor(Math.random() * 30) + 20; // Random between 20-50 as fallback
+//         }
+//         trackersEl.textContent = `${trackerCount} Active Trackers`;
+//     }
+    
+//     // Update Data Partners (from terms.thirdParties or fallback)
+//     const partnersEl = document.getElementById('dataPartnersCount');
+//     if (partnersEl) {
+//         let partnerCount = 0;
+//         if (termsSummary?.thirdParties && termsSummary.thirdParties.length > 0) {
+//             partnerCount = termsSummary.thirdParties.length;
+//         } else if (privacySummary?.thirdParties && privacySummary.thirdParties.length > 0) {
+//             partnerCount = privacySummary.thirdParties.length;
+//         } else {
+//             partnerCount = Math.floor(Math.random() * 20) + 5; // Random between 5-25 as fallback
+//         }
+//         partnersEl.textContent = `${partnerCount} Data Partners`;
+//     }
+    
+//     // Update Risk Score (already handled by updateOverallRisk, but we'll keep it synced)
+//     const riskEl = document.getElementById('calculatedRiskScore');
+//     if (riskEl) {
+//         const vals = Object.values(scores).filter(v => v !== undefined && v !== null);
+//         const avg = vals.length ? Math.round(vals.reduce((a, b) => a + b, 0) / vals.length) : 50;
+//         riskEl.textContent = `${avg}% Risk Score`;
+//     }
+// }
 document.addEventListener('DOMContentLoaded', () => {
-    setTimeout(() => { createParticles(); initParallax(); }, 100);
+    setTimeout(() => { createParticles(); initParallax(); updateSiteName();
+        
+
+     }, 100);
 });
 
+document.addEventListener('DOMContentLoaded', async () => {
+    console.log('🚀 CookieWise Dashboard Initializing...');
+    showLoadingState();
+
+    try {
+        const { extractedPrivacy, extractedTerms } = await getExtractedTexts();
+
+        if (!extractedPrivacy && !extractedTerms) {
+            showNoDataState();
+            return;
+        }
+
+        const summarizer = new PolicySummarizer();
+        console.log('📄 Analyzing policies with single API call...');
+        const combined = await summarizer.summarizeBoth(extractedPrivacy, extractedTerms);
+
+        console.log('📦 Groq combined result:', combined);
+
+        const privacy = (combined.privacy && combined.privacy.dataCollected) ? combined.privacy : FALLBACK_PRIVACY;
+        const terms = (combined.terms && combined.terms.thirdParties) ? combined.terms : FALLBACK_TERMS;
+
+        scores.privacy = privacy.riskScore;
+        scores.terms = terms.riskScore;
+
+        // Update all cards
+        updateTrackingCard(privacy);
+        updateSharingCard(privacy);
+        updateCollectionCard(privacy);        
+        // // Update the bottom stats (47 Active Trackers, 15 Data Partners, etc.)
+        // updateBottomStats(privacy, terms);
+
+        updateOverallRisk(scores);
+
+    } catch (error) {
+        console.error('❌ Dashboard error:', error);
+        showErrorState(error.message);
+    }
+});

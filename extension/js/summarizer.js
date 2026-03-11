@@ -23,7 +23,7 @@ class PolicySummarizer {
         const prompt = this.buildPrompt(truncatedText, type);
 
         // Try up to 3 times with exponential backoff
-        for (let attempt = 1; attempt <= 2; attempt++) {
+        for (let attempt = 1; attempt <=1; attempt++) {
             try {
                 console.log(`📡 Attempt ${attempt}: Sending ${type} policy to Gemini...`);
 
