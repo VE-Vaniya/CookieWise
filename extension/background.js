@@ -42,33 +42,53 @@ function applyBadge(tabId, found) {
 /* ------------------------------------------------------------------ */
 /*  Message listener — receives results from content.js                */
 /* ------------------------------------------------------------------ */
-chrome.runtime.onMessage.addListener((message, sender) => {
-  if (message.type !== "COOKIE_BANNER_RESULT") return;
-
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   const tabId = sender?.tab?.id;
-  if (!tabId) return;
 
-  const payload = message.payload;
-  tabState.set(tabId, payload);
-  applyBadge(tabId, payload.found);
-
-  // Show notification only when banner is detected
-  if (payload.found) {
+  if (message.type === "COOKIE_BANNER_RESULT") {
+    if (!tabId) return;
+    const payload = message.payload;
+    tabState.set(tabId, payload);
+    applyBadge(tabId, payload.found);
+if (payload.found) {
     chrome.notifications.create(`cw_${tabId}_${Date.now()}`, {
-      type: "basic",
-      iconUrl: "icons/icon128.png",
-      title: "CookieWise Alert",
-      message: "Cookie banner detected on this site. Click to view details.",
-      priority: 2,
+        type: "basic",
+        iconUrl: "icons/icon128.png",
+        title: "CookieWise Alert",
+        message: "Cookie banner detected! Click to analyze this site's policies.",
+        priority: 2,
     });
+}    chrome.storage.session.set({ [`tab_${tabId}`]: payload }).catch(() => {});
+    return; // sync, no return true needed
+
+  } else if (message.type === "GET_TAB_STATE") {
+    const state = tabState.get(message.tabId) ?? null;
+    if (state) { sendResponse(state); return; }
+    chrome.storage.session.get(`tab_${message.tabId}`)
+      .then(data => sendResponse(data[`tab_${message.tabId}`] ?? null))
+      .catch(() => sendResponse(null));
+    return true; // async
+
+  } else if (message.type === "POLICY_EXTRACTED") {
+    const { docType, text, domain } = message.payload;
+    const key = docType === 'privacy' ? 'extractedPrivacy' : 'extractedTerms';
+    chrome.storage.local.set({ [key]: text }, () => {
+      sendResponse({ success: !chrome.runtime.lastError });
+    });
+    return true; // async
+
+  } else if (message.type === "PROCESS_POLICY") {
+    const { url, domain, docType } = message.payload;
+    fetch(url)
+      .then(res => res.text())
+      .then(html => chrome.tabs.sendMessage(tabId, {
+        type: "CLEAN_AND_LOG_POLICY",
+        payload: { domain, url, html, docType }
+      }))
+      .catch(err => console.error("Fetch failed:", err));
+    return; // fire-and-forget
   }
-
-  // Persist latest result so popup can query it
-  chrome.storage.session
-    .set({ [`tab_${tabId}`]: payload })
-    .catch(() => {});
 });
-
 /* ------------------------------------------------------------------ */
 /*  Clean up state when a tab is closed or navigates away              */
 /* ------------------------------------------------------------------ */
@@ -88,22 +108,22 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo) => {
 /* ------------------------------------------------------------------ */
 /*  Popup queries current tab state                                     */
 /* ------------------------------------------------------------------ */
-chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  if (message.type !== "GET_TAB_STATE") return;
+// chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+//   if (message.type !== "GET_TAB_STATE") return;
 
-  const tabId = message.tabId;
-  const state = tabState.get(tabId) ?? null;
+//   const tabId = message.tabId;
+//   const state = tabState.get(tabId) ?? null;
 
-  if (state) {
-    sendResponse(state);
-  } else {
-    chrome.storage.session
-      .get(`tab_${tabId}`)
-      .then((data) => sendResponse(data[`tab_${tabId}`] ?? null))
-      .catch(() => sendResponse(null));
-    return true; // keep channel open for async response
-  }
-});
+//   if (state) {
+//     sendResponse(state);
+//   } else {
+//     chrome.storage.session
+//       .get(`tab_${tabId}`)
+//       .then((data) => sendResponse(data[`tab_${tabId}`] ?? null))
+//       .catch(() => sendResponse(null));
+//     return true; // keep channel open for async response
+//   }
+// });
 
 /* ------------------------------------------------------------------ */
 /*  Open dashboard (risk-score page) when notification is clicked      */
@@ -118,33 +138,61 @@ chrome.notifications.onClicked.addListener(() => {
 /* ------------------------------------------------------------------ */
 /*  POLICY EXTRACTION HANDLER                                           */
 /* ------------------------------------------------------------------ */
-chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  if (message.type === "PROCESS_POLICY") {
-    const { url, domain, docType = "Policy" } = message.payload;
-    
-    // Per-URL lock to prevent redundant fetches in the same session
-    if (!url || currentlyProcessing.has(url)) return;
+// Remove ALL the duplicate listeners at the bottom and replace with THIS SINGLE CLEAN VERSION:
 
-    currentlyProcessing.add(url);
-    console.warn(`[CookieWise] Extracting ${docType} from: ${url}`);
+// SINGLE listener for extracted policy text
+// chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+//     console.log('📨 Background received message:', message.type);
     
-    fetch(url)
-      .then(res => res.text())
-      .then(html => {
-        // Send raw HTML to content script for advanced DOM cleaning
-        if (sender.tab && sender.tab.id) {
-          chrome.tabs.sendMessage(sender.tab.id, {
-            type: "CLEAN_AND_LOG_POLICY",
-            payload: { domain, url, html, docType }
-          }).catch(() => {});
-        }
+//     if (message.type === "POLICY_EXTRACTED") {
+//         const { docType, text, domain } = message.payload;
+        
+//         console.log(`📥 BACKGROUND: Received ${docType} text (${text.length} chars) for ${domain}`);
+        
+//         // Store the extracted text for the dashboard
+//         const key = docType === 'privacy' ? 'extractedPrivacy' : 'extractedTerms';
+        
+//         // Store in chrome.storage.local
+//         chrome.storage.local.set({ [key]: text }, () => {
+//             if (chrome.runtime.lastError) {
+//                 console.error('❌ Failed to store in local storage:', chrome.runtime.lastError);
+//                 sendResponse({ success: false, error: chrome.runtime.lastError });
+//             } else {
+//                 console.log(`✅ BACKGROUND: Successfully stored ${docType} in chrome.storage.local with key: ${key}`);
+                
+//                 // Verify it was stored
+//                 chrome.storage.local.get([key], (result) => {
+//                     console.log(`🔍 Verification - ${key} exists:`, result[key] ? 'YES' : 'NO');
+//                 });
+                
+//                 sendResponse({ success: true });
+//             }
+//         });
+        
+//         return true; // Keep message channel open for async response
+//     }
+    
+//     // Handle other message types
+//     if (message.type === "COOKIE_BANNER_RESULT") {
+//         // Your existing code for banner results
+//     }
+// });
 
-        // Release lock
-        setTimeout(() => currentlyProcessing.delete(url), 5000);
-      })
-      .catch(err => {
-        console.error(`[CookieWise] Failed extraction from ${url}:`, err);
-        currentlyProcessing.delete(url);
-      });
-  }
-});
+// chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+//   if (message.type !== "PROCESS_POLICY") return;
+
+//   const { url, domain, docType } = message.payload;
+//   const tabId = sender?.tab?.id;
+
+//   console.log(`🌐 Fetching policy: ${url}`);
+
+//   fetch(url)
+//     .then(res => res.text())
+//     .then(html => {
+//       chrome.tabs.sendMessage(tabId, {
+//         type: "CLEAN_AND_LOG_POLICY",
+//         payload: { domain, url, html, docType }
+//       });
+//     })
+//     .catch(err => console.error("❌ Failed to fetch policy:", err));
+// });

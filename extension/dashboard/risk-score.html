@@ -1,8 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+        <script src="../js/config.js"></script>
+    <script src="../js/summarizer.js"></script>
+    <script src="../js/dashboard-updater.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline' 'unsafe-eval' https://generativelanguage.googleapis.com;">
     <title>CookieWise — Risk Score</title>
     <style>
         * {
@@ -735,7 +739,7 @@
                             <div class="icon-3d">📍</div>
                             <h3>TRACKING TECHNOLOGIES</h3>
                             <div class="risk-badge-interactive high">HIGH THREAT</div>
-                            <div style="font-size: 2rem;">23</div>
+                            <div style="font-size: 2rem;" id="dataPointsCount">23</div>
                             <div style="color: cyan;">trackers</div>
                         </div>
                         <div class="flip-card-back">
@@ -758,7 +762,7 @@
                             <div class="icon-3d">🔄</div>
                             <h3>DATA SHARING</h3>
                             <div class="risk-badge-interactive high">HIGH THREAT</div>
-                            <div style="font-size: 2rem;">15+</div>
+                            <div style="font-size: 2rem;" id="partnersCount">15</div>
                             <div style="color: cyan;">partners</div>
                         </div>
                         <div class="flip-card-back">
@@ -807,82 +811,6 @@
         <div style="margin-top: 1rem; display: flex; gap: 2rem; justify-content: center;">
         </div>
     </footer>
-
-    <script>
-        // Generate floating particles
-        function createParticles() {
-            const particlesContainer = document.getElementById('particles');
-            for (let i = 0; i < 50; i++) {
-                const particle = document.createElement('div');
-                particle.className = 'particle';
-                particle.style.left = Math.random() * 100 + '%';
-                particle.style.animationDuration = (Math.random() * 10 + 10) + 's';
-                particle.style.animationDelay = Math.random() * 5 + 's';
-                particlesContainer.appendChild(particle);
-            }
-        }
-        
-        createParticles();
-
-// Navigation handled by HTML links
-
-        // Cycle through risk levels
-        let riskLevels = [25, 50, 75, 95];
-        let currentRiskIndex = 2;
-
-        function cycleRiskLevel() {
-            currentRiskIndex = (currentRiskIndex + 1) % riskLevels.length;
-            let percentage = riskLevels[currentRiskIndex];
-            
-            document.getElementById('riskScore').textContent = percentage + '%';
-            document.getElementById('gaugeFill').style.width = percentage + '%';
-            
-            // Change color based on risk
-            let color;
-            if (percentage <= 30) color = '#00ff00';
-            else if (percentage <= 60) color = '#ffff00';
-            else color = '#ff0000';
-            
-            document.getElementById('gaugeFill').style.background = `linear-gradient(90deg, ${color}, #f0f)`;
-        }
-
-        // Generate report with animation
-        function generateReport() {
-            const button = event.target;
-            button.textContent = '⚡ GENERATING REPORT... ⚡';
-            button.style.transform = 'scale(0.95)';
-            
-            setTimeout(() => {
-                button.textContent = '✅ REPORT GENERATED ✅';
-                button.style.transform = 'scale(1)';
-                
-                setTimeout(() => {
-                    button.textContent = '⚡ GENERATE THREAT REPORT ⚡';
-                }, 2000);
-            }, 1500);
-        }
-
-        // Add parallax effect to clauses
-        document.querySelectorAll('.clause-parallax-item').forEach((item, index) => {
-            item.addEventListener('mousemove', (e) => {
-                const rect = item.getBoundingClientRect();
-                const x = e.clientX - rect.left;
-                const y = e.clientY - rect.top;
-                
-                const centerX = rect.width / 2;
-                const centerY = rect.height / 2;
-                
-                const angleX = (y - centerY) / 20;
-                const angleY = (centerX - x) / 20;
-                
-                item.style.transform = `perspective(1000px) rotateX(${angleX}deg) rotateY(${angleY}deg) translateX(10px)`;
-            });
-            
-            item.addEventListener('mouseleave', () => {
-                item.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) translateX(10px)';
-            });
-        });
-    </script>
 </body>
 </html>
 </html>

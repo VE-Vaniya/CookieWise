@@ -236,12 +236,16 @@
   function findLegalLinks(container = document) {
     // 1. Collect all links from the container, including deep Shadow DOM
     const links = querySelectorAllShadow("a", container);
-    
+
     // Find potential "Accept" buttons for proximity boost
-    const acceptButtons = querySelectorAllShadow("button, [role='button']").filter(b => {
-      const text = (b.innerText || "").toLowerCase();
-      return text.includes("accept") || text.includes("agree") || text.includes("allow");
-    });
+const acceptButtons = querySelectorAllShadow("button, [role='button']").filter(b => {
+    try {
+        const text = (b?.innerText || b?.textContent || "").toLowerCase();
+        return text.includes("accept") || text.includes("agree") || text.includes("allow");
+    } catch (e) {
+        return false;
+    }
+});
 
     const candidates = [];
     const BAD_PATTERNS = ["settings", "preferences", "manage-cookies", "consent", "news", "latest", "blog", "category", "articles", "generator", "tool", "pricing", "affiliate", "demo", "product", "guide"];
@@ -249,7 +253,7 @@
     for (const link of links) {
       const text = (link.innerText || "").toLowerCase().trim();
       const href = (link.href || "").toLowerCase();
-      
+
       if (!href || href.startsWith("javascript:") || href.startsWith("#") || href === location.origin + "/" || href === location.href) continue;
 
       let score = 0;
@@ -258,7 +262,7 @@
       // --- PRIVACY SIGNALS ---
       if (text === "privacy" || text === "privacy statement") { score += 20; type = "privacy"; }
       else if (text.includes("privacy policy") || text.includes("privacy notice")) { score += 18; type = "privacy"; }
-      
+
       // --- TERMS SIGNALS ---
       if (text === "terms" || text === "terms & conditions" || text === "terms of use") { score += 20; type = "terms"; }
       else if (text.includes("terms of service") || text.includes("legal terms")) { score += 18; type = "terms"; }
@@ -266,7 +270,7 @@
       // --- URL HEURISTICS ---
       if (href.includes("privacy-statement") || href.includes("privacy-policy")) { score += 15; if (type === "unknown") type = "privacy"; }
       if (href.includes("terms-of-use") || href.includes("terms-and-conditions")) { score += 15; if (type === "unknown") type = "terms"; }
-      
+
       // --- PROXIMITY BOOST (Gemini Recommendation) ---
       try {
         const linkRect = link.getBoundingClientRect();
@@ -278,7 +282,7 @@
             break;
           }
         }
-      } catch (e) {}
+      } catch (e) { }
 
       // --- FILTERS ---
       if (BAD_PATTERNS.some(p => text.includes(p) || (href.includes(p) && !href.includes("privacy") && !href.includes("terms")))) {
@@ -387,10 +391,13 @@
   /* ------------------------------------------------------------------ */
   let processedThisSession = false;
 
+  // In content.js - REPLACE the entire chrome.runtime.onMessage.addListener section
+  // Find this section (around line 430-500) and replace with:
+
   chrome.runtime.onMessage.addListener((message) => {
     if (message.type === "CLEAN_AND_LOG_POLICY") {
       const { domain, url, html, docType = "Policy" } = message.payload;
-      
+
       try {
         const parser = new DOMParser();
         const doc = parser.parseFromString(html, "text/html");
@@ -419,7 +426,7 @@
               cleanText = extracted.join("\n\n");
               break;
             }
-          } catch (e) {}
+          } catch (e) { }
         }
 
         // STRATEGY 1: DOM Scraping with Rule-Based Targeting
@@ -445,19 +452,47 @@
           cleanText = root.innerText;
         }
 
-        // Rule 3: Final cleanup and HTML stripping (even for JSON strings)
+        // Rule 3: Final cleanup and HTML stripping
         cleanText = cleanText
-          .replace(/<[^>]+>/g, '')             // Final aggressive HTML tag removal
-          .replace(/[ \t]+/g, ' ')             // Normalize spaces
-          .replace(/\n\s*\n/g, '\n\n')        // Normalize paragraphs
-          .replace(/(\n){3,}/g, '\n\n')       // Max 2 newlines
+          .replace(/<[^>]+>/g, '')
+          .replace(/[ \t]+/g, ' ')
+          .replace(/\n\s*\n/g, '\n\n')
+          .replace(/(\n){3,}/g, '\n\n')
           .trim();
 
+        // THIS IS THE IMPORTANT PART - MOVED OUTSIDE THE INNER TRY-CATCH
         if (cleanText.length > 500) {
           console.log(`%c[CookieWise] Full ${docType.toUpperCase()} Extracted for ${domain}`, "color: #4CAF50; font-weight: bold; font-size: 14px;");
           console.log(`Source URL: ${url}`);
           console.log(cleanText.slice(0, 10000) + (cleanText.length > 10000 ? "\n...[Truncated]..." : ""));
           console.log(`%c[CookieWise] --- End of ${docType.toUpperCase()} ---`, "color: #4CAF50; font-weight: bold;");
+
+          // 🔥 SEND TO BACKGROUND
+          console.log(`📤 Sending ${docType} to background for storage...`);
+
+          chrome.runtime.sendMessage({
+            type: "POLICY_EXTRACTED",
+            payload: {
+              docType: docType.toLowerCase(),
+              text: cleanText,
+              domain: domain,
+              url: url
+            }
+          }, (response) => {
+            if (chrome.runtime.lastError) {
+              console.error('❌ Error sending to background:', chrome.runtime.lastError);
+            } else {
+              console.log(`✅ Successfully sent ${docType} to background`);
+            }
+          });
+
+          // Also store in sessionStorage as backup
+          try {
+            sessionStorage.setItem(`cookiewise_${docType.toLowerCase()}`, cleanText);
+            console.log(`💾 Backup stored in sessionStorage`);
+          } catch (e) {
+            console.error('Failed to store in sessionStorage:', e);
+          }
         } else {
           console.log(`[CookieWise] Document at ${url} appears to be empty or protected.`);
         }
@@ -502,11 +537,11 @@
 
     // --- POLICY EXTRACTION (Once per sessions) ---
     if (!processedThisSession) {
-      const legalLinks = findLegalLinks(result.element || document); 
+      const legalLinks = findLegalLinks(result.element || document);
       const foundAny = Object.keys(legalLinks).length > 0;
 
       if (foundAny) {
-        processedThisSession = true; 
+        processedThisSession = true;
         for (const [type, url] of Object.entries(legalLinks)) {
           console.log(`[CookieWise] Extracting ${type} document:`, url);
           chrome.runtime.sendMessage({
