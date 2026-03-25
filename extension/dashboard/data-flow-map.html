@@ -4,6 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="../js/config.js"></script>
+    <script src="../js/summarizer.js"></script>
     <script src="../js/dashboard-updater.js"></script>
 
     <title>CookieWise — Data Flow Map</title>
@@ -778,7 +780,7 @@
         <div class="nav-tabs-modern">
             <a href="risk-score.html" class="nav-btn-modern"><span>📊</span> Risk Score</a>
             <a href="data-flow-map.html" class="nav-btn-modern active"><span>🌐</span> Data Flow Map</a>
-            <a href="threat-scan.html" class="nav-btn-modern"><span>⚠️</span> Threat Scan</a>
+            <a href="dangerous-clauses.html" class="nav-btn-modern"><span>⚠️</span> Dangerous Clauses</a>
         </div>
         <div class="status-hologram">
             <span class="pulse-ring"></span>
@@ -1335,94 +1337,7 @@
                 </div>
             </div>
 
-            <script>
-                (() => {
-                    const DATA = {
-                        usa: { flag: '🇺🇸', name: 'USA', risk: 'high', consent: 'Consent Required', desc: 'Data shared with 15+ ad networks. Largest advertising ecosystem globally.' },
-                        eu: { flag: '🇪🇺', name: 'EU', risk: 'medium', consent: 'Legitimate Interest', desc: 'GDPR zone — analytics & performance cookies. Relatively safer jurisdiction.' },
-                        uk: { flag: '🇬🇧', name: 'UK', risk: 'medium', consent: 'Legitimate Interest', desc: 'Post-Brexit UK GDPR. Marketing & analytics cookies shared.' },
-                        cn: { flag: '🇨🇳', name: 'China', risk: 'critical', consent: 'Third-Party Sharing', desc: 'Critical risk — data may be transferred to state-affiliated parties under Chinese law.' },
-                        in: { flag: '🇮🇳', name: 'India', risk: 'high', consent: 'Third-Party Sharing', desc: 'Customer support & behavioural data. Limited enforcement of transfer restrictions.' },
-                        br: { flag: '🇧🇷', name: 'Brazil', risk: 'medium', consent: 'Legitimate Interest', desc: 'LGPD covers data use. Analytics shared under legitimate interest basis.' },
-                        au: { flag: '🇦🇺', name: 'Australia', risk: 'low', consent: 'Legitimate Interest', desc: 'Performance cookies only. Strong privacy act in place.' },
-                        jp: { flag: '🇯🇵', name: 'Japan', risk: 'medium', consent: 'Consent Required', desc: 'Advertising & retargeting data. APPI compliance required.' },
-                        ru: { flag: '🇷🇺', name: 'Russia', risk: 'high', consent: 'Third-Party Sharing', desc: 'Data localisation laws. Third-party sharing raises compliance concerns.' },
-                    };
-
-                    function animateCount(id, target, dur) {
-                        const el = document.getElementById(id);
-                        if (!el) return;
-                        let start = null;
-                        function step(ts) {
-                            if (!start) start = ts;
-                            const p = Math.min((ts - start) / dur, 1);
-                            el.textContent = Math.round(p * target);
-                            if (p < 1) requestAnimationFrame(step);
-                        }
-                        requestAnimationFrame(step);
-                    }
-
-                    function initTooltips() {
-                        const wrap = document.getElementById('dfm2MapWrap');
-                        const tooltip = document.getElementById('dfm2Tooltip');
-                        if (!wrap || !tooltip) return;
-
-                        document.querySelectorAll('.dfm2-dest-g').forEach(g => {
-                            const id = g.dataset.id;
-                            const info = DATA[id];
-                            if (!info) return;
-
-                            g.addEventListener('mouseenter', (e) => {
-                                document.getElementById('dfm2TtCountry').textContent = info.flag + ' ' + info.name;
-                                const riskEl = document.getElementById('dfm2TtRisk');
-                                riskEl.textContent = info.risk.toUpperCase() + ' RISK';
-                                riskEl.className = 'dfm2-tt-risk ' + info.risk;
-                                document.getElementById('dfm2TtDesc').textContent = info.desc;
-                                document.getElementById('dfm2TtConsent').textContent = 'Consent type: ' + info.consent;
-                                tooltip.style.display = 'block';
-                            });
-
-                            g.addEventListener('mousemove', (e) => {
-                                const wr = wrap.getBoundingClientRect();
-                                let lx = e.clientX - wr.left + 14;
-                                let ly = e.clientY - wr.top - 14;
-                                if (lx + 250 > wr.width) lx -= 260;
-                                if (ly < 0) ly = 10;
-                                tooltip.style.left = lx + 'px';
-                                tooltip.style.top = ly + 'px';
-                            });
-
-                            g.addEventListener('mouseleave', () => {
-                                tooltip.style.display = 'none';
-                            });
-                        });
-                    }
-
-                    function initSection() {
-                        initTooltips();
-                        // animate counters when section becomes visible
-                        const section = document.getElementById('heatmap');
-                        if (!section) return;
-                        const obs = new MutationObserver(() => {
-                            if (section.classList.contains('active-section')) {
-                                animateCount('dfm2c1', 9, 1200);
-                                animateCount('dfm2c2', 4, 1000);
-                            }
-                        });
-                        obs.observe(section, { attributes: true, attributeFilter: ['class'] });
-                        if (section.style.display !== 'none') {
-                            animateCount('dfm2c1', 9, 1200);
-                            animateCount('dfm2c2', 4, 1000);
-                        }
-                    }
-
-                    if (document.readyState === 'loading') {
-                        document.addEventListener('DOMContentLoaded', initSection);
-                    } else {
-                        setTimeout(initSection, 80);
-                    }
-                })();
-            </script>
+            <script src="../js/data-flow-map.js"></script>
         </div>
 
         <!-- Dangerous Clauses Section -->

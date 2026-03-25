@@ -128,7 +128,24 @@ Return ONLY the JSON object, no other text.`;
             retentionPeriod: "Until account deletion or 2 years after last activity",
             userControls: ["Access data", "Delete account", "Opt-out of marketing"],
             riskScore: 65,
-            warnings: ["Uses cookies for advertising", "Shares data with third parties"]
+            warnings: ["Uses cookies for advertising", "Shares data with third parties"],
+            dangerousClauses: [
+                {
+                    title: "Indefinite Cookie Retention",
+                    description: "Cookies persist for 5+ years creating permanent tracking profiles.",
+                    severity: 85,
+                    icon: "⚠️"
+                }
+            ],
+            dataFlow: [
+                {
+                    id: "usa",
+                    name: "USA",
+                    risk: "high",
+                    consent: "Third-Party Sharing",
+                    desc: "Data shared with 15+ ad networks."
+                }
+            ]
         };
     }
 
@@ -160,7 +177,24 @@ Return ONLY the JSON object, no other text.`;
     "retentionPeriod": "how long data is kept",
     "userControls": ["user options"],
     "riskScore": 65,
-    "warnings": ["concerning clauses"]
+    "warnings": ["concerning clauses"],
+    "dangerousClauses": [
+      {
+        "title": "Short title",
+        "description": "Explanation of why it's dangerous",
+        "severity": 85,
+        "icon": "⚠️"
+      }
+    ],
+    "dataFlow": [
+      {
+        "id": "usa",
+        "name": "USA",
+        "risk": "high",
+        "consent": "Third-Party Sharing",
+        "desc": "Data shared with 15+ ad networks."
+      }
+    ]
   },
   "terms": {
     "summary": "2-3 sentence summary",
@@ -170,7 +204,9 @@ Return ONLY the JSON object, no other text.`;
     "retentionPeriod": "how long",
     "userControls": ["user options"],
     "riskScore": 65,
-    "warnings": ["concerning clauses"]
+    "warnings": ["concerning clauses"],
+    "dangerousClauses": [],
+    "dataFlow": []
   }
 }
 
@@ -178,6 +214,8 @@ Rules:
 - riskScore must be a plain integer 0-100
 - thirdParties must contain COMPANY names only, never individual people's names or job titles
 - trackingTechnologies must list actual tools/technologies (cookies, pixels, SDKs, analytics tools)
+- dangerousClauses identifies clauses that are dangerous (e.g. selling data without consent, >2yrs retention, mandatory arbitration, cross-device tracking, unregulated international transfers). severity is 0-100, icon is an emoji.
+- dataFlow extracts data regions. Re-use ONLY the EXACT 'id' from this list: usa, eu, uk, cn, in, br, au, jp, ru. risk is one of: low, medium, high, critical. consent is one of: Consent Required, Legitimate Interest, Third-Party Sharing. If no regions are mentioned, return an empty array.
 - If a document is not provided, set its key to null
 - Return ONLY the JSON, no markdown backticks, no extra text
 

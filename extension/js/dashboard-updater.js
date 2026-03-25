@@ -37,46 +37,61 @@ const FALLBACK_TERMS = {
  */
 document.addEventListener('DOMContentLoaded', async () => {
     console.log('🚀 CookieWise Dashboard Initializing...');
-    showLoadingState();
+    if (typeof showLoadingState === 'function') showLoadingState();
 
     try {
-        // Get extracted policy texts from storage
-        const { extractedPrivacy, extractedTerms } = await getExtractedTexts();
+        // Get extracted policy texts and cached analysis from storage
+        const storageResult = await new Promise(resolve => {
+            chrome.storage.local.get(['extractedPrivacy', 'extractedTerms', 'analyzedData'], resolve);
+        });
 
-        if (!extractedPrivacy && !extractedTerms) {
-            showNoDataState();
-            return;
+        let combined = storageResult.analyzedData;
+        const { extractedPrivacy, extractedTerms } = storageResult;
+
+        if (!combined) {
+            if (!extractedPrivacy && !extractedTerms) {
+                if (typeof showNoDataState === 'function') showNoDataState();
+                return;
+            }
+
+            if (typeof PolicySummarizer !== 'undefined') {
+                const summarizer = new PolicySummarizer();
+                console.log('📄 Analyzing policies with single API call...');
+                combined = await summarizer.summarizeBoth(extractedPrivacy, extractedTerms);
+                console.log('📦 Groq combined result:', combined);
+                chrome.storage.local.set({ analyzedData: combined });
+            } else {
+                console.error('❌ PolicySummarizer is not defined. Make sure summarizer.js is included.');
+                if (typeof showErrorState === 'function') showErrorState('Missing PolicySummarizer script.');
+                return;
+            }
+        } else {
+            console.log('📦 Using cached analyzedData from storage');
+            // Hide loading state if we are just using cache and not proceeding to UI updates
         }
-
-        // Initialize summarizer and analyze both policies in one API call
-        const summarizer = new PolicySummarizer();
-        console.log('📄 Analyzing policies with single API call...');
-        const combined = await summarizer.summarizeBoth(extractedPrivacy, extractedTerms);
-
-        console.log('📦 Groq combined result:', combined);
 
         // Use API results if available, otherwise fallback to demo data
         const privacy = (combined.privacy && combined.privacy.dataCollected) ? combined.privacy : FALLBACK_PRIVACY;
         const terms = (combined.terms && combined.terms.thirdParties) ? combined.terms : FALLBACK_TERMS;
 
-        // Store risk scores for overall calculation
         scores.privacy = privacy.riskScore;
         scores.terms = terms.riskScore;
 
-        // Update all three dashboard cards with analyzed data
-        updateTrackingCard(privacy);
-        updateSharingCard(privacy);
-        updateCollectionCard(privacy);
-        
-        // Update bottom statistics (tracker count, partner count, risk score)
-        updateBottomStats(privacy, terms);
-
-        // Calculate and display overall risk score
-        updateOverallRisk(scores);
-
+        // Try to update risk-score.html UI elements if they exist
+        if (typeof updateTrackingCard === 'function') {
+            try {
+                updateTrackingCard(privacy);
+                updateSharingCard(privacy);
+                updateCollectionCard(privacy);
+                updateBottomStats(privacy, terms);
+                updateOverallRisk(scores);
+            } catch (e) {
+                // Ignore DOM errors on pages where cards don't exist
+            }
+        }
     } catch (error) {
         console.error('❌ Dashboard error:', error);
-        showErrorState(error.message);
+        if (typeof showErrorState === 'function') showErrorState(error.message);
     }
 });
 

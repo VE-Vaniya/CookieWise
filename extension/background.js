@@ -73,7 +73,10 @@ if (payload.found) {
     const { docType, text, domain } = message.payload;
     const key = docType === 'privacy' ? 'extractedPrivacy' : 'extractedTerms';
     chrome.storage.local.set({ [key]: text }, () => {
-      sendResponse({ success: !chrome.runtime.lastError });
+      // Clear the previously cached AI analysis whenever new policies are extracted
+      chrome.storage.local.remove('analyzedData', () => {
+        sendResponse({ success: !chrome.runtime.lastError });
+      });
     });
     return true; // async
 

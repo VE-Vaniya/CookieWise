@@ -4,9 +4,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="../js/config.js"></script>
+    <script src="../js/summarizer.js"></script>
     <script src="../js/dashboard-updater.js"></script>
 
-    <title>CookieWise — Threat Scan</title>
+    <title>CookieWise — Dangerous Clauses</title>
     <style>
         * {
             margin: 0;
@@ -778,7 +780,7 @@
         <div class="nav-tabs-modern">
             <a href="risk-score.html" class="nav-btn-modern"><span>📊</span> Risk Score</a>
             <a href="data-flow-map.html" class="nav-btn-modern"><span>🌐</span> Data Flow Map</a>
-            <a href="threat-scan.html" class="nav-btn-modern active"><span>⚠️</span> Threat Scan</a>
+            <a href="dangerous-clauses.html" class="nav-btn-modern active"><span>⚠️</span> Dangerous Clauses</a>
         </div>
         <div class="status-hologram">
             <span class="pulse-ring"></span>
@@ -789,55 +791,14 @@
     <main class="main-content">
         <div id="clauses" class="section active-section">
             <h1
-                style="text-align: center; margin-bottom: 2rem; background: linear-gradient(135deg, #ff6b6b, #f0f); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
-                CRITICAL THREAT DETECTION
+                style="text-align: center; margin-bottom: 2rem; background: linear-gradient(135deg, #ff6b6b, #f0f); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">
+                DANGEROUS CLAUSES
             </h1>
 
-            <div class="clauses-parallax">
-                <div class="clause-parallax-item">
-                    <div class="clause-icon-3d">🔴</div>
-                    <div style="flex: 1;">
-                        <h3 style="color: #ff6b6b;">Third Party Data Sharing</h3>
-                        <p style="color: #94a3b8;">Your data may be sold to advertising networks without explicit
-                            consent</p>
-                    </div>
-                    <div class="severity-meter" style="--percent: 95">
-
-                    </div>
-                </div>
-
-                <div class="clause-parallax-item">
-                    <div class="clause-icon-3d">⚠️</div>
-                    <div style="flex: 1;">
-                        <h3 style="color: #ff6b00;">Indefinite Cookie Retention</h3>
-                        <p style="color: #94a3b8;">Cookies persist for 5+ years creating permanent tracking profiles</p>
-                    </div>
-                    <div class="severity-meter" style="--percent: 85">
-
-                    </div>
-                </div>
-
-                <div class="clause-parallax-item">
-                    <div class="clause-icon-3d">🌍</div>
-                    <div style="flex: 1;">
-                        <h3 style="color: #ff6b00;">International Data Transfer</h3>
-                        <p style="color: #94a3b8;">Data transferred to countries with weaker privacy laws</p>
-                    </div>
-                    <div class="severity-meter" style="--percent: 80">
-
-                    </div>
-                </div>
-
-                <div class="clause-parallax-item">
-                    <div class="clause-icon-3d">📱</div>
-                    <div style="flex: 1;">
-                        <h3 style="color: #ffd93d;">Cross-Device Tracking</h3>
-                        <p style="color: #94a3b8;">Activity tracked across all devices to build comprehensive profile
-                        </p>
-                    </div>
-                    <div class="severity-meter" style="--percent: 65">
-
-                    </div>
+            <div class="clauses-parallax" id="clausesContainer">
+                <div style="text-align: center; color: #94a3b8; padding: 2rem;">
+                    <div class="pulse-ring" style="margin: 0 auto 1rem;"></div>
+                    Loading AI Analysis...
                 </div>
             </div>
         </div>
@@ -852,81 +813,7 @@
         </div>
     </footer>
 
-    <script>
-        // Generate floating particles
-        function createParticles() {
-            const particlesContainer = document.getElementById('particles');
-            for (let i = 0; i < 50; i++) {
-                const particle = document.createElement('div');
-                particle.className = 'particle';
-                particle.style.left = Math.random() * 100 + '%';
-                particle.style.animationDuration = (Math.random() * 10 + 10) + 's';
-                particle.style.animationDelay = Math.random() * 5 + 's';
-                particlesContainer.appendChild(particle);
-            }
-        }
-
-        createParticles();
-
-        // Navigation handled by HTML links
-
-        // Cycle through risk levels
-        let riskLevels = [25, 50, 75, 95];
-        let currentRiskIndex = 2;
-
-        function cycleRiskLevel() {
-            currentRiskIndex = (currentRiskIndex + 1) % riskLevels.length;
-            let percentage = riskLevels[currentRiskIndex];
-
-            document.getElementById('riskScore').textContent = percentage + '%';
-            document.getElementById('gaugeFill').style.width = percentage + '%';
-
-            // Change color based on risk
-            let color;
-            if (percentage <= 30) color = '#00ff00';
-            else if (percentage <= 60) color = '#ffff00';
-            else color = '#ff0000';
-
-            document.getElementById('gaugeFill').style.background = `linear-gradient(90deg, ${color}, #f0f)`;
-        }
-
-        // Generate report with animation
-        function generateReport() {
-            const button = event.target;
-            button.textContent = '⚡ GENERATING REPORT... ⚡';
-            button.style.transform = 'scale(0.95)';
-
-            setTimeout(() => {
-                button.textContent = '✅ REPORT GENERATED ✅';
-                button.style.transform = 'scale(1)';
-
-                setTimeout(() => {
-                    button.textContent = '⚡ GENERATE THREAT REPORT ⚡';
-                }, 2000);
-            }, 1500);
-        }
-
-        // Add parallax effect to clauses
-        document.querySelectorAll('.clause-parallax-item').forEach((item, index) => {
-            item.addEventListener('mousemove', (e) => {
-                const rect = item.getBoundingClientRect();
-                const x = e.clientX - rect.left;
-                const y = e.clientY - rect.top;
-
-                const centerX = rect.width / 2;
-                const centerY = rect.height / 2;
-
-                const angleX = (y - centerY) / 20;
-                const angleY = (centerX - x) / 20;
-
-                item.style.transform = `perspective(1000px) rotateX(${angleX}deg) rotateY(${angleY}deg) translateX(10px)`;
-            });
-
-            item.addEventListener('mouseleave', () => {
-                item.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) translateX(10px)';
-            });
-        });
-    </script>
+    <script src="../js/dangerous-clauses.js"></script>
 </body>
 
 </html>
