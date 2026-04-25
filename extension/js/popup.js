@@ -102,7 +102,13 @@ function renderNoData() {
 }
 document.getElementById("openDashboard").addEventListener("click", () => {
   chrome.tabs.create({
-    url: chrome.runtime.getURL("dashboard/risk-score.html")
+    url: chrome.runtime.getURL("html/risk-score.html")
+  });
+});
+
+document.getElementById("openSettings").addEventListener("click", () => {
+  chrome.tabs.create({
+    url: chrome.runtime.getURL("html/default-cookie-settings.html")
   });
 });
 

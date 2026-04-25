@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CookieWise — Default Cookie Settings</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', 'Inter', system-ui, sans-serif;
+            background: radial-gradient(ellipse at top, #1a1f35, #0a0c1a);
+            color: #ffffff;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Cyber Grid Effect */
+        .cyber-grid {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image:
+                linear-gradient(rgba(0, 255, 255, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 255, 255, 0.05) 1px, transparent 1px);
+            background-size: 40px 40px;
+            pointer-events: none;
+            z-index: 0;
+            animation: gridPulse 4s infinite;
+        }
+
+        @keyframes gridPulse {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.6; }
+        }
+
+        /* Navigation */
+        .glass-nav {
+            background: rgba(10, 20, 40, 0.8);
+            backdrop-filter: blur(15px);
+            border-bottom: 2px solid rgba(0, 255, 255, 0.3);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 10px 30px rgba(0, 255, 255, 0.1);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.5rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .logo-icon {
+            font-size: 2rem;
+            filter: drop-shadow(0 0 10px cyan);
+        }
+
+        .logo-text {
+            background: linear-gradient(135deg, #fff, cyan);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-tabs-modern {
+            display: flex;
+            gap: 12px;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 6px;
+            border-radius: 40px;
+            border: 1px solid rgba(0, 255, 255, 0.3);
+        }
+
+        .nav-btn-modern {
+            padding: 12px 28px;
+            border: none;
+            background: transparent;
+            color: #94a3b8;
+            border-radius: 30px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            position: relative;
+            overflow: hidden;
+            text-decoration: none;
+        }
+
+        .nav-btn-modern:hover {
+            color: white;
+        }
+
+        .nav-btn-modern.active {
+            background: linear-gradient(135deg, cyan, #00f);
+            color: white;
+            box-shadow: 0 5px 20px cyan;
+        }
+
+        /* Main Content */
+        .main-content {
+            position: relative;
+            z-index: 10;
+            max-width: 1000px;
+            margin: 4rem auto;
+            padding: 0 2rem;
+        }
+
+        .settings-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .settings-title {
+            font-size: 2.5rem;
+            color: cyan;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            text-shadow: 0 0 15px rgba(0, 255, 255, 0.5);
+            margin-bottom: 1rem;
+        }
+
+        .settings-subtitle {
+            color: #94a3b8;
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Settings Cards */
+        .settings-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .setting-card {
+            background: rgba(20, 30, 50, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 2rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .setting-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(0, 255, 255, 0.5);
+            box-shadow: 0 10px 30px rgba(0, 255, 255, 0.1);
+        }
+
+        .setting-card.selected {
+            background: rgba(0, 255, 255, 0.1);
+            border-color: cyan;
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.2);
+        }
+
+        .setting-card.selected::before {
+            content: '\f058'; /* fa-check-circle */
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            color: cyan;
+            font-size: 1.5rem;
+            filter: drop-shadow(0 0 5px cyan);
+        }
+
+        .card-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .card-icon.accept { color: #00ff00; filter: drop-shadow(0 0 10px #00ff00); }
+        .card-icon.reject { color: #ff0000; filter: drop-shadow(0 0 10px #ff0000); }
+        .card-icon.none { color: #94a3b8; }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: white;
+        }
+
+        .card-desc {
+            color: #94a3b8;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .warning-box {
+            margin-top: auto;
+            padding: 1rem;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .warning-box.danger {
+            background: rgba(255, 0, 0, 0.1);
+            border: 1px solid rgba(255, 0, 0, 0.3);
+            color: #ffcccc;
+        }
+
+        .warning-box.warning {
+            background: rgba(255, 165, 0, 0.1);
+            border: 1px solid rgba(255, 165, 0, 0.3);
+            color: #ffe6cc;
+        }
+        
+        .warning-box.info {
+            background: rgba(0, 255, 255, 0.1);
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            color: #ccffff;
+        }
+
+        .warning-icon {
+            font-size: 1.2rem;
+            margin-top: 2px;
+        }
+
+        .select-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 1rem;
+            width: 100%;
+        }
+
+        .select-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .active-btn {
+            background: linear-gradient(135deg, cyan, #00f);
+            border: none;
+            box-shadow: 0 5px 15px rgba(0, 255, 255, 0.3);
+        }
+        
+        .active-btn:hover {
+            background: linear-gradient(135deg, #00ffff, #3333ff);
+        }
+
+        /* Footer */
+        .footer-modern {
+            text-align: center;
+            padding: 2rem;
+            color: rgba(0, 255, 255, 0.5);
+            font-size: 0.9rem;
+            position: relative;
+            z-index: 10;
+            border-top: 1px solid rgba(0, 255, 255, 0.2);
+            margin-top: 4rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="cyber-grid"></div>
+
+    <nav class="glass-nav">
+        <div class="logo">
+            <span class="logo-icon">🍪</span>
+            <span class="logo-text">CookieWise</span>
+        </div>
+        <div class="nav-tabs-modern">
+            <a href="risk-score.html" class="nav-btn-modern"><i class="fas fa-chart-pie"></i> Risk Score</a>
+            <a href="data-flow-map.html" class="nav-btn-modern"><i class="fas fa-map-marked-alt"></i> Data Flow Map</a>
+            <a href="threat-scan.html" class="nav-btn-modern"><i class="fas fa-shield-alt"></i> Threat Scan</a>
+            <a href="default-cookie-settings.html" class="nav-btn-modern active"><i class="fas fa-cog"></i> Settings</a>
+        </div>
+        <div></div> <!-- Spacer -->
+    </nav>
+
+    <main class="main-content">
+        <div class="settings-header">
+            <h1 class="settings-title">Default Cookie Settings</h1>
+            <p class="settings-subtitle">Configure how CookieWise automatically handles cookie consent banners across the web.</p>
+        </div>
+
+        <div class="settings-grid">
+            <div class="setting-card" id="card-accept">
+                <div class="card-icon accept"><i class="fas fa-check-circle"></i></div>
+                <h3 class="card-title">Accept All Cookies</h3>
+                <p class="card-desc">CookieWise will automatically select the "Accept All" option on cookie banners to grant full access to websites.</p>
+                <div class="warning-box danger">
+                    <i class="fas fa-exclamation-triangle warning-icon" style="color: #ff6b6b;"></i>
+                    <span><strong>Risky Option:</strong> The cookie policy might be dangerous. Granting all permissions can expose your personal data and browsing habits to third-party trackers.</span>
+                </div>
+                <button class="select-btn" id="btn-accept">Select Option</button>
+            </div>
+
+            <div class="setting-card" id="card-reject">
+                <div class="card-icon reject"><i class="fas fa-times-circle"></i></div>
+                <h3 class="card-title">Reject All Cookies</h3>
+                <p class="card-desc">CookieWise will automatically select the "Reject All" or "Necessary Only" option on cookie banners.</p>
+                <div class="warning-box warning">
+                    <i class="fas fa-exclamation-circle warning-icon" style="color: #ffd93d;"></i>
+                    <span><strong>Potential Issues:</strong> The website might not allow access or function properly because of their website usage policy when all optional cookies are rejected.</span>
+                </div>
+                <button class="select-btn" id="btn-reject">Select Option</button>
+            </div>
+            
+            <div class="setting-card" id="card-none">
+                <div class="card-icon none"><i class="fas fa-hand-paper"></i></div>
+                <h3 class="card-title">Do Nothing (Default)</h3>
+                <p class="card-desc">CookieWise will analyze the cookie banner but will wait for you to manually make a selection.</p>
+                <div class="warning-box info">
+                    <i class="fas fa-info-circle warning-icon" style="color: cyan;"></i>
+                    <span><strong>Manual Control:</strong> You maintain full control over which cookies are accepted on a site-by-site basis.</span>
+                </div>
+                <button class="select-btn" id="btn-none">Select Option</button>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer-modern">
+        <span><i class="fas fa-cookie-bite" style="margin-right: 8px;"></i> CookieWise • AI-Powered Privacy Guardian</span>
+    </footer>
+
+    <script src="../js/default-cookie-settings.js"></script>
+</body>
+
+</html>

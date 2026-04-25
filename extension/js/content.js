@@ -531,6 +531,31 @@ const acceptButtons = querySelectorAllShadow("button, [role='button']").filter(b
         alert.classList.remove("cw-visible");
         setTimeout(() => alert.remove(), 500);
       }
+
+      // Auto-click logic based on default cookie settings
+      chrome.storage.local.get(['defaultCookieSetting'], (data) => {
+        const setting = data.defaultCookieSetting;
+        if (setting === 'acceptAll' || setting === 'rejectAll') {
+          setTimeout(() => {
+            const buttons = querySelectorAllShadow("button, [role='button'], a", result.element || document);
+            const keywords = setting === 'acceptAll' 
+              ? ['accept all', 'allow all', 'agree', 'accept'] 
+              : ['reject all', 'deny all', 'decline', 'reject', 'necessary only', 'essential only', 'deny'];
+            
+            for (const btn of buttons) {
+              const text = (btn.innerText || btn.textContent || "").toLowerCase().trim();
+              // Check if button text matches any of our keywords
+              if (text && keywords.some(kw => text === kw || (text.includes(kw) && text.length < 30))) {
+                console.log(`[CookieWise] Automatically clicked ${setting} button: "${text}"`);
+                try {
+                  btn.click();
+                } catch(e) {}
+                break;
+              }
+            }
+          }, 800); // Give banner a moment to fully render and attach listeners
+        }
+      });
     } else {
       showAlert(result.error ? "Error on site." : "Unable to detect banner.");
     }

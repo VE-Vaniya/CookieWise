@@ -16,7 +16,7 @@
     "https://*/*"
   ],
   "background": {
-    "service_worker": "background.js"
+    "service_worker": "js/background.js"
   },
   "content_scripts": [
     {
@@ -25,13 +25,13 @@
         "https://*/*"
       ],
       "js": [
-        "content.js"
+        "js/content.js"
       ],
       "run_at": "document_idle"
     }
   ],
   "action": {
-    "default_popup": "popup.html",
+    "default_popup": "html/popup.html",
     "default_icon": {
       "16": "icons/icon16.png",
       "48": "icons/icon48.png",
@@ -47,9 +47,10 @@
   "web_accessible_resources": [
     {
       "resources": [
-        "dashboard/risk-score.html",
-        "dashboard/data-flow-map.html",
-        "dashboard/threat-scan.html"
+        "html/risk-score.html",
+        "html/data-flow-map.html",
+        "html/threat-scan.html",
+        "html/default-cookie-settings.html"
       ],
       "matches": [
         "<all_urls>"
