@@ -18,10 +18,10 @@
     /* ── Base ───────────────────────────────────────────── */
     body {
       width: 320px;
-      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      font-family: 'Inter', system-ui, sans-serif;
       font-size: 14px;
-      background: #0f1117;
-      color: #e2e8f0;
+      background: #F5F6F8;
+      color: #334155;
       overflow: hidden;
     }
 
@@ -31,8 +31,8 @@
       align-items: center;
       gap: 10px;
       padding: 14px 16px 12px;
-      background: linear-gradient(135deg, #1a1f2e 0%, #12161f 100%);
-      border-bottom: 1px solid #1e2535;
+      background: #F5F6F8;
+      border-bottom: 1px solid #CBD5E1;
     }
 
     header img {
@@ -50,9 +50,9 @@
     header span {
       font-size: 10px;
       font-weight: 500;
-      background: #2563eb22;
-      color: #60a5fa;
-      border: 1px solid #2563eb44;
+      background: #E2E8F0;
+      color: #4A6C7F;
+      border: 1px solid #CBD5E1;
       padding: 2px 6px;
       border-radius: 20px;
       margin-left: auto;
@@ -70,18 +70,18 @@
     }
 
     .status-card.found {
-      background: linear-gradient(135deg, #3b0f0f 0%, #1f0a0a 100%);
-      border: 1px solid #7f1d1d;
+      background: #F5F6F8;
+      border: 1px solid #FFB6B9;
     }
 
     .status-card.clear {
-      background: linear-gradient(135deg, #052e16 0%, #051f0f 100%);
-      border: 1px solid #14532d;
+      background: #F5F6F8;
+      border: 1px solid #C1E1C1;
     }
 
     .status-card.scanning {
-      background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
-      border: 1px solid #334155;
+      background: #F5F6F8;
+      border: 1px solid #AEC6CF;
     }
 
     .status-icon {
@@ -98,28 +98,28 @@
 
     .status-text p {
       font-size: 12px;
-      color: #94a3b8;
+      color: #64748B;
       line-height: 1.5;
     }
 
     .found .status-text h2 {
-      color: #fca5a5;
+      color: #EF4444;
     }
 
     .clear .status-text h2 {
-      color: #86efac;
+      color: #10B981;
     }
 
     .scanning .status-text h2 {
-      color: #93c5fd;
+      color: #3B82F6;
     }
 
     /* ── Detail rows ────────────────────────────────────── */
     .details {
       margin: 12px 14px 0;
       border-radius: 10px;
-      background: #151a27;
-      border: 1px solid #1e2535;
+      background: #FFFFFF;
+      border: 1px solid #CBD5E1;
       overflow: hidden;
     }
 
@@ -128,7 +128,7 @@
       align-items: flex-start;
       gap: 8px;
       padding: 9px 12px;
-      border-bottom: 1px solid #1e2535;
+      border-bottom: 1px solid #CBD5E1;
     }
 
     .detail-row:last-child {
@@ -137,7 +137,7 @@
 
     .detail-label {
       font-size: 11px;
-      color: #64748b;
+      color: #94A3B8;
       min-width: 72px;
       flex-shrink: 0;
       padding-top: 1px;
@@ -147,15 +147,15 @@
 
     .detail-value {
       font-size: 12px;
-      color: #cbd5e1;
+      color: #64748B;
       word-break: break-word;
       line-height: 1.4;
     }
 
     .detail-value.mono {
-      font-family: 'Fira Code', 'Cascadia Code', monospace;
+      font-family: 'Inter', system-ui, sans-serif;
       font-size: 11px;
-      color: #818cf8;
+      color: #1E40AF;
     }
 
     .pill {
@@ -167,29 +167,29 @@
     }
 
     .pill.method-vendor {
-      background: #312e81;
-      color: #a5b4fc;
+      background: #E0E7FF;
+      color: #3730A3;
     }
 
     .pill.method-keyword {
-      background: #1c1f4a;
-      color: #818cf8;
+      background: #DBEAFE;
+      color: #1E40AF;
     }
 
     .pill.method-multi {
-      background: #0c2147;
-      color: #7dd3fc;
+      background: #E0F2FE;
+      color: #0369A1;
     }
 
     /* ── Snippet box ────────────────────────────────────── */
     .snippet {
       margin: 10px 14px 0;
-      background: #0d1117;
-      border: 1px solid #1e2535;
+      background: #FFFFFF;
+      border: 1px solid #CBD5E1;
       border-radius: 8px;
       padding: 10px 12px;
       font-size: 11.5px;
-      color: #94a3b8;
+      color: #64748B;
       font-style: italic;
       line-height: 1.55;
       max-height: 72px;
@@ -199,7 +199,7 @@
     .snippet-label {
       font-size: 10px;
       text-transform: uppercase;
-      color: #475569;
+      color: #334155;
       letter-spacing: 0.5px;
       margin: 12px 14px 4px;
     }
@@ -208,8 +208,8 @@
     footer {
       margin-top: 14px;
       padding: 10px 16px;
-      background: #0a0d14;
-      border-top: 1px solid #1e2535;
+      background: #F5F6F8;
+      border-top: 1px solid #CBD5E1;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -217,7 +217,7 @@
 
     footer span {
       font-size: 10.5px;
-      color: #475569;
+      color: #334155;
     }
 
     .dot {
@@ -230,16 +230,16 @@
     }
 
     .dot.active {
-      background: #22c55e;
-      box-shadow: 0 0 4px #22c55e;
+      background: #4ADE80;
+      box-shadow: none;
     }
 
     .dot.inactive {
-      background: #e53935;
+      background: #F87171;
     }
 
     .dot.idle {
-      background: #64748b;
+      background: #94A3B8;
     }
 
     /* ── Spinner ─────────────────────────────────────────── */
@@ -253,8 +253,8 @@
       display: inline-block;
       width: 14px;
       height: 14px;
-      border: 2px solid #334155;
-      border-top-color: #60a5fa;
+      border: 2px solid #AEC6CF;
+      border-top-color: #4A6C7F;
       border-radius: 50%;
       animation: spin 0.7s linear infinite;
       vertical-align: middle;
@@ -283,9 +283,9 @@
     <button id="openDashboard" style="
     width:100%;
     padding:10px;
-    background:#2563eb;
+    background:#9CB4BD;
     border:none;
-    color:white;
+    color: #FFFFFF;
     border-radius:6px;
     font-weight:600;
     cursor:pointer;">
@@ -299,7 +299,7 @@
     padding:10px;
     background:#475569;
     border:none;
-    color:white;
+    color: #FFFFFF;
     border-radius:6px;
     font-weight:600;
     cursor:pointer;">

@@ -11,7 +11,7 @@
 (() => {
   "use strict";
 
-  console.log("%c[CookieWise] Extension ACTIVE on: " + location.hostname, "background: #1e1e1e; color: #00ff00; padding: 5px; border-radius: 4px;");
+  console.log("%c[CookieWise] Extension ACTIVE on: " + location.hostname, "background: #1e1e1e; color: #C1E1C1; padding: 5px; border-radius: 4px;");
 
   /* ------------------------------------------------------------------ */
   /*  VENDOR SELECTORS — Covers 40+ real-world CMPs / banner patterns    */
@@ -329,19 +329,19 @@ const acceptButtons = querySelectorAllShadow("button, [role='button']").filter(b
           position: fixed;
           top: 20px;
           right: 20px;
-          background: rgba(30, 30, 30, 0.9);
-          color: white;
+          background: #FFFFFF;
+          color: #FFFFFF;
           padding: 14px 22px;
           border-radius: 12px;
           z-index: 2147483647;
-          box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+          box-shadow: none;
           font-family: 'Segoe UI', Roboto, sans-serif;
           font-size: 14px;
           display: flex;
           align-items: center;
           gap: 12px;
           backdrop-filter: blur(10px);
-          border: 1px solid rgba(255,255,255,0.1);
+          border: 1px solid #E2E8F0;
           transform: translateX(100px);
           opacity: 0;
           transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);

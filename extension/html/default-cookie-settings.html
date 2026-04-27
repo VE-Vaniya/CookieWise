@@ -14,9 +14,9 @@
         }
 
         body {
-            font-family: 'Poppins', 'Inter', system-ui, sans-serif;
-            background: radial-gradient(ellipse at top, #1a1f35, #0a0c1a);
-            color: #ffffff;
+            font-family: 'Inter', system-ui, sans-serif;
+            background: #F5F6F8;
+            color: #334155;
             min-height: 100vh;
             position: relative;
             overflow-x: hidden;
@@ -29,9 +29,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-image:
-                linear-gradient(rgba(0, 255, 255, 0.05) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0, 255, 255, 0.05) 1px, transparent 1px);
+            background-image: none;
             background-size: 40px 40px;
             pointer-events: none;
             z-index: 0;
@@ -55,7 +53,7 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            box-shadow: 0 10px 30px rgba(0, 255, 255, 0.1);
+            box-shadow: none;
         }
 
         .logo {
@@ -74,7 +72,7 @@
         }
 
         .logo-text {
-            background: linear-gradient(135deg, #fff, cyan);
+            background: #F5F6F8;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -83,7 +81,7 @@
         .nav-tabs-modern {
             display: flex;
             gap: 12px;
-            background: rgba(0, 0, 0, 0.3);
+            background: transparent;
             padding: 6px;
             border-radius: 40px;
             border: 1px solid rgba(0, 255, 255, 0.3);
@@ -93,7 +91,7 @@
             padding: 12px 28px;
             border: none;
             background: transparent;
-            color: #94a3b8;
+            color: #64748B;
             border-radius: 30px;
             font-size: 1rem;
             font-weight: 600;
@@ -108,13 +106,13 @@
         }
 
         .nav-btn-modern:hover {
-            color: white;
+            color: #FFFFFF;
         }
 
         .nav-btn-modern.active {
-            background: linear-gradient(135deg, cyan, #00f);
-            color: white;
-            box-shadow: 0 5px 20px cyan;
+            background: #F5F6F8;
+            color: #FFFFFF;
+            box-shadow: none;
         }
 
         /* Main Content */
@@ -136,12 +134,12 @@
             color: cyan;
             text-transform: uppercase;
             letter-spacing: 4px;
-            text-shadow: 0 0 15px rgba(0, 255, 255, 0.5);
+            text-shadow: none;
             margin-bottom: 1rem;
         }
 
         .settings-subtitle {
-            color: #94a3b8;
+            color: #64748B;
             font-size: 1.1rem;
             max-width: 600px;
             margin: 0 auto;
@@ -172,18 +170,18 @@
         .setting-card:hover {
             transform: translateY(-5px);
             border-color: rgba(0, 255, 255, 0.5);
-            box-shadow: 0 10px 30px rgba(0, 255, 255, 0.1);
+            box-shadow: none;
         }
 
         .setting-card.selected {
             background: rgba(0, 255, 255, 0.1);
             border-color: cyan;
-            box-shadow: 0 0 30px rgba(0, 255, 255, 0.2);
+            box-shadow: none;
         }
 
         .setting-card.selected::before {
             content: '\f058'; /* fa-check-circle */
-            font-family: 'Font Awesome 6 Free';
+            font-family: 'Inter', system-ui, sans-serif;
             font-weight: 900;
             position: absolute;
             top: 20px;
@@ -198,18 +196,18 @@
             margin-bottom: 1rem;
         }
 
-        .card-icon.accept { color: #00ff00; filter: drop-shadow(0 0 10px #00ff00); }
-        .card-icon.reject { color: #ff0000; filter: drop-shadow(0 0 10px #ff0000); }
-        .card-icon.none { color: #94a3b8; }
+        .card-icon.accept { color: #4ADE80; filter: drop-shadow(0 0 10px #4ADE80); }
+        .card-icon.reject { color: #F87171; filter: drop-shadow(0 0 10px #F87171); }
+        .card-icon.none { color: #64748B; }
 
         .card-title {
             font-size: 1.5rem;
             font-weight: 600;
-            color: white;
+            color: #FFFFFF;
         }
 
         .card-desc {
-            color: #94a3b8;
+            color: #64748B;
             font-size: 0.95rem;
             line-height: 1.5;
         }
@@ -227,19 +225,19 @@
         .warning-box.danger {
             background: rgba(255, 0, 0, 0.1);
             border: 1px solid rgba(255, 0, 0, 0.3);
-            color: #ffcccc;
+            color: #FEE2E2;
         }
 
         .warning-box.warning {
             background: rgba(255, 165, 0, 0.1);
             border: 1px solid rgba(255, 165, 0, 0.3);
-            color: #ffe6cc;
+            color: #FFEDD5;
         }
         
         .warning-box.info {
             background: rgba(0, 255, 255, 0.1);
             border: 1px solid rgba(0, 255, 255, 0.3);
-            color: #ccffff;
+            color: #CFFAFE;
         }
 
         .warning-icon {
@@ -248,9 +246,9 @@
         }
 
         .select-btn {
-            background: rgba(255, 255, 255, 0.1);
+            background: #E2E8F0;
             border: 1px solid rgba(255, 255, 255, 0.2);
-            color: white;
+            color: #FFFFFF;
             padding: 10px 20px;
             border-radius: 8px;
             font-size: 1rem;
@@ -266,13 +264,13 @@
         }
 
         .active-btn {
-            background: linear-gradient(135deg, cyan, #00f);
+            background: #F5F6F8;
             border: none;
-            box-shadow: 0 5px 15px rgba(0, 255, 255, 0.3);
+            box-shadow: none;
         }
         
         .active-btn:hover {
-            background: linear-gradient(135deg, #00ffff, #3333ff);
+            background: #F5F6F8;
         }
 
         /* Footer */
@@ -318,7 +316,7 @@
                 <h3 class="card-title">Accept All Cookies</h3>
                 <p class="card-desc">CookieWise will automatically select the "Accept All" option on cookie banners to grant full access to websites.</p>
                 <div class="warning-box danger">
-                    <i class="fas fa-exclamation-triangle warning-icon" style="color: #ff6b6b;"></i>
+                    <i class="fas fa-exclamation-triangle warning-icon" style="color: #F87171;"></i>
                     <span><strong>Risky Option:</strong> The cookie policy might be dangerous. Granting all permissions can expose your personal data and browsing habits to third-party trackers.</span>
                 </div>
                 <button class="select-btn" id="btn-accept">Select Option</button>
@@ -329,7 +327,7 @@
                 <h3 class="card-title">Reject All Cookies</h3>
                 <p class="card-desc">CookieWise will automatically select the "Reject All" or "Necessary Only" option on cookie banners.</p>
                 <div class="warning-box warning">
-                    <i class="fas fa-exclamation-circle warning-icon" style="color: #ffd93d;"></i>
+                    <i class="fas fa-exclamation-circle warning-icon" style="color: #FCD34D;"></i>
                     <span><strong>Potential Issues:</strong> The website might not allow access or function properly because of their website usage policy when all optional cookies are rejected.</span>
                 </div>
                 <button class="select-btn" id="btn-reject">Select Option</button>

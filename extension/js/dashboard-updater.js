@@ -234,8 +234,8 @@ function updateOverallRisk(scores) {
     if (riskEl) riskEl.textContent = avg + '%';
     if (gaugeEl) {
         gaugeEl.style.width = avg + '%';
-        const color = avg <= 30 ? '#00ff00' : avg <= 60 ? '#ffff00' : '#ff0000';
-        gaugeEl.style.background = `linear-gradient(90deg, ${color}, #f0f)`;
+        const color = avg <= 30 ? '#C1E1C1' : avg <= 60 ? '#FFDAB9' : '#FFB6B9';
+        gaugeEl.style.background = `${color}`;
     }
     
     // Update bottom risk score
@@ -292,7 +292,7 @@ function showLoadingState() {
     if (container && !document.getElementById('loading-indicator')) {
         const div = document.createElement('div');
         div.id = 'loading-indicator';
-        div.style.cssText = 'text-align:center;padding:20px;color:cyan;font-size:1.2rem;';
+        div.style.cssText = 'text-align:center;padding:20px;color: #334155;font-size:1.2rem;';
         div.innerHTML = '🔄 Analyzing policies with Groq AI...';
         container.appendChild(div);
     }
@@ -323,8 +323,8 @@ function showNoDataState() {
     if (container && !document.querySelector('.no-data-message')) {
         const div = document.createElement('div');
         div.className = 'no-data-message';
-        div.style.cssText = 'grid-column:1/-1;text-align:center;padding:50px;background:rgba(0,255,255,0.1);border-radius:20px;border:1px solid cyan;';
-        div.innerHTML = '<h3 style="color:cyan;">🔍 No Policy Detected</h3><p style="color:#94a3b8;margin-top:10px;">Visit a website with a cookie banner to see analysis.</p>';
+        div.style.cssText = 'grid-column:1/-1;text-align:center;padding:50px;background:#F5F6F8;border-radius:20px;border:1px solid #E2E8F0;';
+        div.innerHTML = '<h3 style="color: #334155;">🔍 No Policy Detected</h3><p style="color: #64748B;margin-top:10px;">Visit a website with a cookie banner to see analysis.</p>';
         container.prepend(div);
     }
 }
@@ -338,8 +338,8 @@ function showErrorState(error) {
     if (container && !document.querySelector('.error-message')) {
         const div = document.createElement('div');
         div.className = 'error-message';
-        div.style.cssText = 'grid-column:1/-1;text-align:center;padding:30px;background:rgba(255,0,0,0.1);border-radius:20px;border:1px solid #ff6b6b;margin-bottom:20px;';
-        div.innerHTML = `<h3 style="color:#ff6b6b;">⚠️ Analysis Error</h3><p style="color:#94a3b8;margin-top:10px;">${error}</p>`;
+        div.style.cssText = 'grid-column:1/-1;text-align:center;padding:30px;background:#F5F6F8;border-radius:20px;border:1px solid #FFB6B9;margin-bottom:20px;';
+        div.innerHTML = `<h3 style="color:#FFB6B9;">⚠️ Analysis Error</h3><p style="color: #64748B;margin-top:10px;">${error}</p>`;
         container.prepend(div);
     }
 }
@@ -439,7 +439,7 @@ async function updateSiteName() {
             chrome.storage.local.get(['extractedPrivacy', 'extractedTerms'], (result) => {
                 if (result.extractedPrivacy || result.extractedTerms) {
                     if (statusDiv) {
-                        statusDiv.innerHTML = `ACTIVE SCAN: <span id="currentSite" style="color: #00ff00;">${hostname}</span>`;
+                        statusDiv.innerHTML = `ACTIVE SCAN: <span id="currentSite" style="color: #C1E1C1;">${hostname}</span>`;
                     }
                 } else {
                     if (statusDiv) {

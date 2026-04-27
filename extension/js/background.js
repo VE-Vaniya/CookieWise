@@ -11,13 +11,13 @@
 /* ------------------------------------------------------------------ */
 const BADGE_FOUND = {
   text: "!",
-  color: "#E53935",   // Red — banner detected
+  color: "#FFB6B9",   // Red — banner detected
   title: "CookieWise: Cookie banner detected on this page",
 };
 
 const BADGE_CLEAR = {
   text: "",
-  color: "#4CAF50",   // Green — no banner (badge hidden)
+  color: "#C1E1C1",   // Green — no banner (badge hidden)
   title: "CookieWise: No cookie banner detected",
 };
 

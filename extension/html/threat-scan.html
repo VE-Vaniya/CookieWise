@@ -15,9 +15,9 @@
         }
 
         body {
-            font-family: 'Poppins', 'Inter', system-ui, sans-serif;
-            background: radial-gradient(ellipse at top, #1a1f35, #0a0c1a);
-            color: #ffffff;
+            font-family: 'Inter', system-ui, sans-serif;
+            background: #F5F6F8;
+            color: #334155;
             min-height: 100vh;
             position: relative;
             overflow-x: hidden;
@@ -30,9 +30,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-image:
-                linear-gradient(rgba(0, 255, 255, 0.05) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0, 255, 255, 0.05) 1px, transparent 1px);
+            background-image: none;
             background-size: 40px 40px;
             pointer-events: none;
             z-index: 0;
@@ -92,7 +90,7 @@
             width: 100%;
             height: 100%;
             border: 2px solid cyan;
-            box-shadow: 0 0 20px cyan;
+            box-shadow: none;
         }
 
         .cube-bg .front {
@@ -141,7 +139,7 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            box-shadow: 0 10px 30px rgba(0, 255, 255, 0.1);
+            box-shadow: none;
         }
 
         .logo {
@@ -173,7 +171,7 @@
         }
 
         .logo-text {
-            background: linear-gradient(135deg, #fff, cyan);
+            background: #F5F6F8;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -182,7 +180,7 @@
         .nav-tabs-modern {
             display: flex;
             gap: 12px;
-            background: rgba(0, 0, 0, 0.3);
+            background: transparent;
             padding: 6px;
             border-radius: 40px;
             border: 1px solid rgba(0, 255, 255, 0.3);
@@ -192,7 +190,7 @@
             padding: 12px 28px;
             border: none;
             background: transparent;
-            color: #94a3b8;
+            color: #64748B;
             border-radius: 30px;
             font-size: 1rem;
             font-weight: 600;
@@ -224,9 +222,9 @@
         }
 
         .nav-btn-modern.active {
-            background: linear-gradient(135deg, cyan, #00f);
-            color: white;
-            box-shadow: 0 5px 20px cyan;
+            background: #F5F6F8;
+            color: #FFFFFF;
+            box-shadow: none;
         }
 
         .status-hologram {
@@ -250,7 +248,7 @@
             left: -50%;
             width: 200%;
             height: 200%;
-            background: linear-gradient(45deg, transparent, rgba(0, 255, 255, 0.2), transparent);
+            background: #F5F6F8;
             animation: shine 3s infinite;
         }
 
@@ -269,21 +267,21 @@
             height: 10px;
             background: cyan;
             border-radius: 50%;
-            box-shadow: 0 0 20px cyan;
+            box-shadow: none;
             animation: pulseRing 2s infinite;
         }
 
         @keyframes pulseRing {
             0% {
-                box-shadow: 0 0 0 0 cyan;
+                box-shadow: none;
             }
 
             70% {
-                box-shadow: 0 0 20px 10px rgba(0, 255, 255, 0);
+                box-shadow: none;
             }
 
             100% {
-                box-shadow: 0 0 0 0 rgba(0, 255, 255, 0);
+                box-shadow: none;
             }
         }
 
@@ -332,7 +330,7 @@
             padding: 2rem;
             transform-style: preserve-3d;
             transition: transform 0.3s;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+            box-shadow: none;
         }
 
         .risk-card-3d:hover {
@@ -351,14 +349,14 @@
             color: cyan;
             text-transform: uppercase;
             letter-spacing: 3px;
-            text-shadow: 0 0 10px cyan;
+            text-shadow: none;
         }
 
         .risk-score {
             font-size: 4rem;
             font-weight: 800;
             line-height: 1;
-            background: linear-gradient(135deg, #ff6b6b, #f0f);
+            background: #F5F6F8;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -369,7 +367,7 @@
         .gauge-container {
             position: relative;
             height: 30px;
-            background: rgba(0, 0, 0, 0.3);
+            background: transparent;
             border-radius: 15px;
             margin: 2rem 0;
             border: 1px solid cyan;
@@ -380,7 +378,7 @@
         .gauge-fill {
             height: 100%;
             width: 75%;
-            background: linear-gradient(90deg, #00ff87, #60efff, #0061ff);
+            background: #F5F6F8;
             border-radius: 15px;
             position: relative;
             transition: width 1s cubic-bezier(0.68, -0.55, 0.265, 1.55);
@@ -463,7 +461,7 @@
             background: rgba(20, 30, 50, 0.9);
             backdrop-filter: blur(10px);
             border: 1px solid cyan;
-            box-shadow: 0 10px 30px rgba(0, 255, 255, 0.2);
+            box-shadow: none;
         }
 
         .flip-card-front {
@@ -495,16 +493,16 @@
 
         .risk-badge-interactive.high {
             background: rgba(255, 0, 0, 0.2);
-            color: #ff6b6b;
-            border: 1px solid #ff6b6b;
-            box-shadow: 0 0 15px #ff6b6b;
+            color: #F87171;
+            border: 1px solid #F87171;
+            box-shadow: none;
         }
 
         .risk-badge-interactive.medium {
             background: rgba(255, 255, 0, 0.2);
-            color: #ffd93d;
-            border: 1px solid #ffd93d;
-            box-shadow: 0 0 15px #ffd93d;
+            color: #FCD34D;
+            border: 1px solid #FCD34D;
+            box-shadow: none;
         }
 
         @keyframes glow {
@@ -540,7 +538,7 @@
 
         .heatmap-tower:hover {
             transform: translateY(-10px) scale(1.05);
-            box-shadow: 0 20px 40px cyan;
+            box-shadow: none;
         }
 
         .tower-container {
@@ -554,7 +552,7 @@
 
         .tower-block {
             width: 30px;
-            background: linear-gradient(180deg, cyan, #00f);
+            background: #F5F6F8;
             border-radius: 8px 8px 0 0;
             transition: height 0.3s;
             position: relative;
@@ -609,7 +607,7 @@
             left: -100%;
             width: 100%;
             height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 0, 0, 0.2), transparent);
+            background: #F5F6F8;
             transition: left 0.5s;
         }
 
@@ -620,13 +618,13 @@
         .clause-parallax-item:hover {
             transform: translateX(10px) scale(1.02);
             border-color: red;
-            box-shadow: -10px 10px 30px rgba(255, 0, 0, 0.3);
+            box-shadow: none;
         }
 
         .clause-icon-3d {
             width: 60px;
             height: 60px;
-            background: linear-gradient(135deg, rgba(255, 0, 0, 0.2), rgba(255, 0, 255, 0.2));
+            background: #F5F6F8;
             border-radius: 15px;
             display: flex;
             align-items: center;
@@ -654,7 +652,7 @@
 
         .severity-circle-bg {
             fill: none;
-            stroke: rgba(255, 255, 255, 0.1);
+            stroke: #E2E8F0;
             stroke-width: 8;
         }
 
@@ -668,22 +666,22 @@
         }
 
         .severity-circle-fill.critical {
-            stroke: #ff0000;
+            stroke: #F87171;
         }
 
         .severity-circle-fill.high {
-            stroke: #ff6b00;
+            stroke: #FB923C;
         }
 
         .severity-circle-fill.medium {
-            stroke: #ffd93d;
+            stroke: #FCD34D;
         }
 
         /* Action Button */
         .action-button {
-            background: linear-gradient(135deg, cyan, #00f);
+            background: #F5F6F8;
             border: none;
-            color: white;
+            color: #FFFFFF;
             padding: 16px 40px;
             border-radius: 50px;
             font-size: 1.2rem;
@@ -694,7 +692,7 @@
             transition: all 0.3s;
             margin: 2rem auto;
             display: block;
-            box-shadow: 0 10px 30px cyan;
+            box-shadow: none;
         }
 
         .action-button::before {
@@ -717,7 +715,7 @@
 
         .action-button:hover {
             transform: scale(1.05);
-            box-shadow: 0 20px 40px cyan;
+            box-shadow: none;
         }
 
         /* Footer */
@@ -790,7 +788,7 @@
     <main class="main-content">
         <div id="clauses" class="section active-section">
             <h1
-                style="text-align: center; margin-bottom: 2rem; background: linear-gradient(135deg, #ff6b6b, #f0f); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+                style="text-align: center; margin-bottom: 2rem; background: #F5F6F8; -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
                 CRITICAL THREAT DETECTION
             </h1>
 
@@ -798,8 +796,8 @@
                 <div class="clause-parallax-item">
                     <div class="clause-icon-3d">🔴</div>
                     <div style="flex: 1;">
-                        <h3 style="color: #ff6b6b;">Third Party Data Sharing</h3>
-                        <p style="color: #94a3b8;">Your data may be sold to advertising networks without explicit
+                        <h3 style="color: #F87171;">Third Party Data Sharing</h3>
+                        <p style="color: #64748B;">Your data may be sold to advertising networks without explicit
                             consent</p>
                     </div>
                     <div class="severity-meter" style="--percent: 95">
@@ -810,8 +808,8 @@
                 <div class="clause-parallax-item">
                     <div class="clause-icon-3d">⚠️</div>
                     <div style="flex: 1;">
-                        <h3 style="color: #ff6b00;">Indefinite Cookie Retention</h3>
-                        <p style="color: #94a3b8;">Cookies persist for 5+ years creating permanent tracking profiles</p>
+                        <h3 style="color: #FB923C;">Indefinite Cookie Retention</h3>
+                        <p style="color: #64748B;">Cookies persist for 5+ years creating permanent tracking profiles</p>
                     </div>
                     <div class="severity-meter" style="--percent: 85">
 
@@ -821,8 +819,8 @@
                 <div class="clause-parallax-item">
                     <div class="clause-icon-3d">🌍</div>
                     <div style="flex: 1;">
-                        <h3 style="color: #ff6b00;">International Data Transfer</h3>
-                        <p style="color: #94a3b8;">Data transferred to countries with weaker privacy laws</p>
+                        <h3 style="color: #FB923C;">International Data Transfer</h3>
+                        <p style="color: #64748B;">Data transferred to countries with weaker privacy laws</p>
                     </div>
                     <div class="severity-meter" style="--percent: 80">
 
@@ -832,8 +830,8 @@
                 <div class="clause-parallax-item">
                     <div class="clause-icon-3d">📱</div>
                     <div style="flex: 1;">
-                        <h3 style="color: #ffd93d;">Cross-Device Tracking</h3>
-                        <p style="color: #94a3b8;">Activity tracked across all devices to build comprehensive profile
+                        <h3 style="color: #FCD34D;">Cross-Device Tracking</h3>
+                        <p style="color: #64748B;">Activity tracked across all devices to build comprehensive profile
                         </p>
                     </div>
                     <div class="severity-meter" style="--percent: 65">
@@ -884,11 +882,11 @@
 
             // Change color based on risk
             let color;
-            if (percentage <= 30) color = '#00ff00';
-            else if (percentage <= 60) color = '#ffff00';
-            else color = '#ff0000';
+            if (percentage <= 30) color = '#4ADE80';
+            else if (percentage <= 60) color = '#FACC15';
+            else color = '#F87171';
 
-            document.getElementById('gaugeFill').style.background = `linear-gradient(90deg, ${color}, #f0f)`;
+            document.getElementById('gaugeFill').style.background = `linear-gradient(90deg, ${color}, #E879F9)`;
         }
 
         // Generate report with animation
