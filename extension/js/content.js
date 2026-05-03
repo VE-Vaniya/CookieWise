@@ -557,7 +557,7 @@ const acceptButtons = querySelectorAllShadow("button, [role='button']").filter(b
         } else if (setting === 'custom' && data.customCookies) {
           setTimeout(() => {
             const buttons = querySelectorAllShadow("button, [role='button'], a", result.element || document);
-            const customizeKeywords = ['customize', 'customise', 'manage preferences', 'manage cookies', 'cookie settings', 'preferences', 'options'];
+            const customizeKeywords = ['customize', 'customise', 'manage preferences', 'manage cookies', 'cookie settings', 'preferences', 'options', 'let me choose'];
             
             let clickedCustomise = false;
             for (const btn of buttons) {
@@ -572,24 +572,24 @@ const acceptButtons = querySelectorAllShadow("button, [role='button']").filter(b
               }
             }
 
-            if (clickedCustomise) {
-              setTimeout(() => {
+            const processCheckboxesAndSave = () => {
                 const checkCategoryAndSet = (text, isChecked, toggleEl) => {
                    let categoryMatched = false;
                    let desiredState = null;
                    
-                   if (text.includes("performance") || text.includes("analytic")) {
+                   if (text.includes("performance") || text.includes("analytic") || text.includes("statistic")) {
                        categoryMatched = true;
                        desiredState = data.customCookies.performance;
                    } else if (text.includes("necessary") || text.includes("essential") || text.includes("strictly")) {
                        categoryMatched = true;
                        desiredState = data.customCookies.necessary;
-                   } else if (text.includes("marketing") || text.includes("target") || text.includes("advertis") || text.includes("ad")) {
+                   } else if (text.includes("marketing") || text.includes("target") || text.includes("advertis") || text.includes("ad") || text.includes("tracker")) {
                        categoryMatched = true;
                        desiredState = data.customCookies.marketing;
                    }
                    
                    if (categoryMatched && desiredState !== null && isChecked !== desiredState) {
+                       console.log(`[CookieWise] Toggling category: ${text} to ${desiredState}`);
                        try { toggleEl.click(); } catch(e) {}
                    }
                 };
@@ -601,7 +601,7 @@ const acceptButtons = querySelectorAllShadow("button, [role='button']").filter(b
                        if (label) labelText = (label.innerText || label.textContent || "").toLowerCase();
                    }
                    if (!labelText) {
-                       const parentLabel = checkbox.closest('label, div, li') || checkbox.parentElement;
+                       const parentLabel = checkbox.closest('label, div, li, tr') || checkbox.parentElement;
                        if (parentLabel) labelText = (parentLabel.innerText || parentLabel.textContent || "").toLowerCase();
                    }
                    
@@ -611,7 +611,7 @@ const acceptButtons = querySelectorAllShadow("button, [role='button']").filter(b
                 
                 setTimeout(() => {
                     const saveButtons = querySelectorAllShadow("button, [role='button'], a", document);
-                    const saveKeywords = ['save', 'confirm', 'save preferences', 'confirm my choices', 'save my choices'];
+                    const saveKeywords = ['save', 'confirm', 'save preferences', 'confirm my choices', 'save my choices', 'allow selection', 'accept selected', 'save settings'];
                     for (const btn of saveButtons) {
                         const text = (btn.innerText || btn.textContent || "").toLowerCase().trim();
                         if (text && saveKeywords.some(kw => text === kw || (text.includes(kw) && text.length < 30))) {
@@ -621,7 +621,13 @@ const acceptButtons = querySelectorAllShadow("button, [role='button']").filter(b
                         }
                     }
                 }, 1000);
-              }, 1500);
+            };
+
+            if (clickedCustomise) {
+              setTimeout(processCheckboxesAndSave, 1500);
+            } else {
+              // Sometimes checkboxes are present on the first layer (like Cookiebot)
+              processCheckboxesAndSave();
             }
           }, 800);
         }
