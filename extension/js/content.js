@@ -533,7 +533,7 @@ const acceptButtons = querySelectorAllShadow("button, [role='button']").filter(b
       }
 
       // Auto-click logic based on default cookie settings
-      chrome.storage.local.get(['defaultCookieSetting'], (data) => {
+      chrome.storage.local.get(['defaultCookieSetting', 'customCookies'], (data) => {
         const setting = data.defaultCookieSetting;
         if (setting === 'acceptAll' || setting === 'rejectAll') {
           setTimeout(() => {
@@ -554,6 +554,76 @@ const acceptButtons = querySelectorAllShadow("button, [role='button']").filter(b
               }
             }
           }, 800); // Give banner a moment to fully render and attach listeners
+        } else if (setting === 'custom' && data.customCookies) {
+          setTimeout(() => {
+            const buttons = querySelectorAllShadow("button, [role='button'], a", result.element || document);
+            const customizeKeywords = ['customize', 'customise', 'manage preferences', 'manage cookies', 'cookie settings', 'preferences', 'options'];
+            
+            let clickedCustomise = false;
+            for (const btn of buttons) {
+              const text = (btn.innerText || btn.textContent || "").toLowerCase().trim();
+              if (text && customizeKeywords.some(kw => text === kw || (text.includes(kw) && text.length < 30))) {
+                console.log(`[CookieWise] Automatically clicked customise button: "${text}"`);
+                try {
+                  btn.click();
+                  clickedCustomise = true;
+                } catch(e) {}
+                break;
+              }
+            }
+
+            if (clickedCustomise) {
+              setTimeout(() => {
+                const checkCategoryAndSet = (text, isChecked, toggleEl) => {
+                   let categoryMatched = false;
+                   let desiredState = null;
+                   
+                   if (text.includes("performance") || text.includes("analytic")) {
+                       categoryMatched = true;
+                       desiredState = data.customCookies.performance;
+                   } else if (text.includes("necessary") || text.includes("essential") || text.includes("strictly")) {
+                       categoryMatched = true;
+                       desiredState = data.customCookies.necessary;
+                   } else if (text.includes("marketing") || text.includes("target") || text.includes("advertis") || text.includes("ad")) {
+                       categoryMatched = true;
+                       desiredState = data.customCookies.marketing;
+                   }
+                   
+                   if (categoryMatched && desiredState !== null && isChecked !== desiredState) {
+                       try { toggleEl.click(); } catch(e) {}
+                   }
+                };
+
+                for (const checkbox of querySelectorAllShadow("input[type='checkbox'], button[role='switch']", document)) {
+                   let labelText = "";
+                   if (checkbox.id) {
+                       const label = document.querySelector(`label[for='${checkbox.id}']`);
+                       if (label) labelText = (label.innerText || label.textContent || "").toLowerCase();
+                   }
+                   if (!labelText) {
+                       const parentLabel = checkbox.closest('label, div, li') || checkbox.parentElement;
+                       if (parentLabel) labelText = (parentLabel.innerText || parentLabel.textContent || "").toLowerCase();
+                   }
+                   
+                   const isChecked = checkbox.checked || checkbox.getAttribute('aria-checked') === 'true';
+                   checkCategoryAndSet(labelText, isChecked, checkbox);
+                }
+                
+                setTimeout(() => {
+                    const saveButtons = querySelectorAllShadow("button, [role='button'], a", document);
+                    const saveKeywords = ['save', 'confirm', 'save preferences', 'confirm my choices', 'save my choices'];
+                    for (const btn of saveButtons) {
+                        const text = (btn.innerText || btn.textContent || "").toLowerCase().trim();
+                        if (text && saveKeywords.some(kw => text === kw || (text.includes(kw) && text.length < 30))) {
+                            console.log(`[CookieWise] Automatically clicked save button: "${text}"`);
+                            try { btn.click(); } catch(e) {}
+                            break;
+                        }
+                    }
+                }, 1000);
+              }, 1500);
+            }
+          }, 800);
         }
       });
     } else {

@@ -275,6 +275,46 @@
             background: linear-gradient(135deg, #00ffff, #3333ff);
         }
 
+        /* Toggle Switch */
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .toggle-switch .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: rgba(255, 255, 255, 0.2);
+            transition: .4s;
+            border-radius: 24px;
+        }
+        .toggle-switch .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        .toggle-switch input:checked + .slider {
+            background-color: cyan;
+            box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+        }
+        .toggle-switch input:checked + .slider:before {
+            transform: translateX(26px);
+            background-color: #0a0c1a;
+        }
+
         /* Footer */
         .footer-modern {
             text-align: center;
@@ -310,6 +350,10 @@
         <div class="settings-header">
             <h1 class="settings-title">Default Cookie Settings</h1>
             <p class="settings-subtitle">Configure how CookieWise automatically handles cookie consent banners across the web.</p>
+            <div class="note-section" style="margin-top: 2rem; background: rgba(0, 255, 255, 0.05); border: 1px solid rgba(0, 255, 255, 0.2); padding: 1.5rem; border-radius: 15px; text-align: left; max-width: 800px; margin-left: auto; margin-right: auto;">
+                <p style="color: #94a3b8; font-size: 0.95rem; margin-bottom: 0.5rem;"><strong><i class="fas fa-info-circle" style="color: cyan; margin-right: 8px;"></i>Important Note:</strong></p>
+                <p style="color: #94a3b8; font-size: 0.9rem; line-height: 1.6;">Some websites do not have a "Reject All" option. If you select "Reject All" but the website doesn't offer it, you will need to manage it manually. Additionally, if you select "Customise Cookie Selection", please bear in mind that since cookie policies of websites differ, thus selected options will be applied but the rest options will remain default.</p>
+            </div>
         </div>
 
         <div class="settings-grid">
@@ -345,12 +389,66 @@
                 </div>
                 <button class="select-btn" id="btn-none">Select Option</button>
             </div>
+            
+            <div class="setting-card" id="card-custom">
+                <div class="card-icon none" style="color: #ff00ff; filter: drop-shadow(0 0 10px #ff00ff);"><i class="fas fa-sliders-h"></i></div>
+                <h3 class="card-title">Customise Cookie Selection</h3>
+                <p class="card-desc">Set default preferences for specific cookie categories (Performance, Necessary, Marketing).</p>
+                <div class="warning-box info" style="background: rgba(255, 0, 255, 0.1); border-color: rgba(255, 0, 255, 0.3); color: #ffccff;">
+                    <i class="fas fa-cog warning-icon" style="color: #ff00ff;"></i>
+                    <span><strong>Granular Control:</strong> CookieWise will attempt to apply your specific category preferences on supported websites.</span>
+                </div>
+                <button class="select-btn" id="btn-custom">Customise Options</button>
+            </div>
         </div>
     </main>
 
     <footer class="footer-modern">
         <span><i class="fas fa-cookie-bite" style="margin-right: 8px;"></i> CookieWise • AI-Powered Privacy Guardian</span>
     </footer>
+
+    <!-- Custom Cookie Modal -->
+    <div id="custom-cookie-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; justify-content: center; align-items: center; backdrop-filter: blur(5px);">
+        <div style="background: #1a1f35; border: 1px solid cyan; border-radius: 20px; padding: 2rem; width: 90%; max-width: 500px; box-shadow: 0 10px 30px rgba(0, 255, 255, 0.2);">
+            <h2 style="color: white; margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: center;">
+                <span>Customise Cookies</span>
+                <i class="fas fa-times" id="close-modal" style="cursor: pointer; color: #94a3b8; transition: 0.3s;"></i>
+            </h2>
+            <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <h4 style="color: white; font-size: 1.1rem;">Performance cookies</h4>
+                        <p style="color: #94a3b8; font-size: 0.85rem;">(sometimes also labelled as analytics cookies)</p>
+                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="toggle-performance">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <h4 style="color: white; font-size: 1.1rem;">Necessary cookies</h4>
+                        <p style="color: #94a3b8; font-size: 0.85rem;">Essential for the website to function.</p>
+                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="toggle-necessary" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <h4 style="color: white; font-size: 1.1rem;">Marketing cookies</h4>
+                        <p style="color: #94a3b8; font-size: 0.85rem;">(also known as targeted ads cookies)</p>
+                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="toggle-marketing">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </div>
+            <button id="save-custom-btn" style="background: linear-gradient(135deg, cyan, #00f); color: white; border: none; padding: 12px; width: 100%; border-radius: 8px; margin-top: 2rem; font-size: 1rem; font-weight: bold; cursor: pointer; transition: 0.3s;">Save Preferences</button>
+        </div>
+    </div>
 
     <script src="../js/default-cookie-settings.js"></script>
 </body>
