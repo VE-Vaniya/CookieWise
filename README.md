@@ -1,8 +1,4 @@
-Here's a complete README for **CookieWise** based on your description:
 
----
-
-```
 # 🍪 CookieWise
 
 ## Introduction
