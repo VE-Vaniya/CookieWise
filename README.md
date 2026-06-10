@@ -1,5 +1,5 @@
 
-# 🍪 CookieWise
+# CookieWise
 
 ## Introduction
 
